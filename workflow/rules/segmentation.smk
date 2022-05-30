@@ -1,0 +1,35 @@
+from os import listdir
+from os.path import join
+
+
+# INPUT FUNCTION (probe, sample, channel) -> full paths to single channel images
+def get_singlechannel_sample(wildcards):
+    """
+        Get FULL paths to all single channel images for a given probe x sample x channel
+    :param wildcards: input function
+    :return: a list of FULL paths
+    """
+    probe = wildcards.probe
+    sample = wildcards.sample
+    train = wildcards.light_train
+    singlechannel_outdir = checkpoints.sample_singlechannel.get(probe = probe, sample = sample, light_train = train).output[0]
+    singlechannel_files = listdir(singlechannel_outdir)
+    singlechannel_files = [f for f in singlechannel_files if not f.startswith(".")]
+    return [join(singlechannel_outdir, sfile) for sfile in singlechannel_files]
+
+
+rule segmentation:
+    """singlechannel images -> dir"""
+    input:
+        get_singlechannel_sample
+    output:
+        directory(join("results", "{probe}", "{sample}", "segmentation", "{light_train}++{params}"))
+    threads:
+        config["resources"]["threads"]["segmentation"]
+    resources:
+        mem_mb=config["resources"]["mem_mb"]["segmentation"],
+        time=config["resources"]["max_time"]["segmentation"]
+    conda:
+        "../envs/image.yaml"
+    script:
+        "../scripts/mainflow_segmentation.py"

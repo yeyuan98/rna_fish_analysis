@@ -1,0 +1,17 @@
+name: image
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch=1.11.0
+  - torchvision=0.12.0
+  - torchaudio=0.11.0
+  - cpuonly=2.0
+  - pip
+  - pip:
+      - numpy==1.21.4
+      - opencv-python-headless==4.5.5.64
+      - segmentation-models-pytorch==0.2.1
+      - tifffile==2022.5.4
+      - tqdm==4.64.0

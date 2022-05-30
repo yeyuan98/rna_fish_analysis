@@ -1,0 +1,9 @@
+usage:
+  mandatory-flags:
+    desc: A pipeline for 3D RNA-FISH data analysis. Integrates AIRLOCALIZE (Lionnet et al.) and a simple U-Net segmentation model for cell type-specific analysis.
+    flags: RNA-FISH, MATLAB, pytorch, R
+  software-stack-deployment:
+    conda: true
+    singularity: true
+    singularity+conda: true
+  report: false

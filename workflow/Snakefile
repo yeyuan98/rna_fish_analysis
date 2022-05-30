@@ -1,0 +1,16 @@
+from rules.snake_helper import *
+
+
+configfile: "config/config.yaml"
+
+include: "rules/sample_convert.smk"
+include: "rules/sample_singlechannel.smk"
+include: "rules/fishdot.smk"
+include: "rules/segmentation.smk"
+
+rule all:
+    input:
+        #"processed/per/Apr 2022 ZT0/single_channel/fish_t1"
+        #output_sample_dirs(workflow="convert",config=config,target=None),
+        #output_sample_dirs(workflow="fishdot", config = config, target=None),
+        output_sample_dirs(workflow="segmentation", config = config, target=None)
