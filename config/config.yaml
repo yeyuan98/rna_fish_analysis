@@ -14,7 +14,7 @@ light_trains:
 data_roots:
   # Basename for input/output data
   input: "test_data"
-  input_ext: "czi"
+  input_ext: ".czi"  # Remember to keep the "."
   generated_scripts: "generated_scripts"
 
 
