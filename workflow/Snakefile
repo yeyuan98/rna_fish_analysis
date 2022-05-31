@@ -8,8 +8,6 @@ include: "rules/sample_singlechannel.smk"
 include: "rules/fishdot.smk"
 include: "rules/segmentation.smk"
 
-container: "library://yeyuan/rna_fish/main:base_with_mamba"
-
 rule all:
     input:
         #"processed/per/Apr 2022 ZT0/single_channel/fish_t1"
