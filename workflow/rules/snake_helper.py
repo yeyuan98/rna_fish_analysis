@@ -26,8 +26,7 @@ def output_workflow(workflow, config):
     """
     result = ""
     if workflow == "convert":
-        converter_name = split(config["tools"]["converter"])[1]
-        result = join("convert", converter_name)
+        result = "bfconvert"
     elif workflow == "fishdot":
         params = "+".join(config["fishdot"].values())
         params = config["pipeline_light_train"]["fishdot"] + "++" + params

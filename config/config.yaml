@@ -60,11 +60,3 @@ segmentation_models:
     augmentation_function_params: {}  # if no parameter needed, put {} here
     fill: true  # should we perform filling for the output prediction mask
     target_pixels: 320
-
-# TODO: Legacy parameters - should be removed in the next release
-tools:
-  # sets file paths for running airlocalize and a legacy name for converter
-  converter: "bfconvert"
-  airlocalize: "resources/AIRLOCALIZE-main" # AIRLOCALIZE program
-  airlocalize_template_ini: "workflow/scripts/airlocalize_template.ini"
-  airlocalize_template_m: "workflow/scripts/airlocalize_template.m"

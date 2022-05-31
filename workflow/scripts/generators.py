@@ -5,6 +5,11 @@
 import os
 
 
+AIRLOCALIZE_template_ini_path = "workflow/scripts/airlocalize_template.ini"
+AIRLOCALIZE_template_m_path = "workflow/scripts/airlocalize_template.m"
+AIRLOCALIZE_root = "resources/AIRLOCALIZE-main"
+
+
 def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
     """
         Generates MATLAB code for AIRLOCALIZE run of a list of input tifs.
@@ -21,7 +26,7 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
         # Generates ini file for each input tif
         tif_name = os.path.split(input_tifs[i])[1]
         ini_paths.append(os.path.join(output_base, tif_name + ".ini"))
-        f = open(config["tools"]["airlocalize_template_ini"], "r")  # read template
+        f = open(AIRLOCALIZE_template_ini_path, "r")  # read template
         t = f.read()
         f.close()
         # Replace the predefined values
@@ -34,7 +39,7 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
         f.write(t)
         f.close()
     # Now, generate the master .m for MATLAB execution
-    f = open(config["tools"]["airlocalize_template_m"], "r")  # read template
+    f = open(AIRLOCALIZE_template_m_path, "r")  # read template
     t = f.read()
     f.close()
     #   Note - when saving the ini paths to the .m script, get absolute paths
@@ -48,7 +53,7 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
     #       Convert single quotes to double
     t = t.replace("{input_inis}", str(ini_paths_abspath).replace("'", '"'))
     #   Note - also get absolute path for the airlocalize root directory
-    airlocalize_root = config["tools"]["airlocalize"]
+    airlocalize_root = AIRLOCALIZE_root
     airlocalize_root_abspath = os.path.join(os.getcwd(), airlocalize_root)
     t = t.replace("{airlocalize_root}", airlocalize_root_abspath)
     f = open(output_mpath, "w")  # write master .m file
