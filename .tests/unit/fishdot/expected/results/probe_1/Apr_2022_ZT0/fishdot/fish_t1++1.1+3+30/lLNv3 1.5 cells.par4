@@ -1,0 +1,36 @@
+[Files]
+dataFileName=/gpfs/accounts/swathi_root/swathi0/yeyu/rnafish/results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv3 1.5 cells.tif
+saveDirName=/gpfs/accounts/swathi_root/swathi0/yeyu/rnafish/results/probe_1/Apr_2022_ZT0/fishdot/fish_t1++1.1+3+30
+fileProcessingMode=singleFile
+inclusionString=
+recursive=0
+
+[detectionSettings]
+psfSigma=1.1, 3
+threshUnits=absolute
+threshLevel=30
+maxSpots=20000
+fitMethod=3DMaskFull
+
+[userInput]
+setPsfInteractively=0
+setThreshInteractively=0
+movieFrameUsedToSetParameters=1
+outputSpotsImage=0
+autoSpotSize=1
+spotSize=2, 2
+autoSpotIntensity=1
+spotIntensity=1000
+
+[advanced]
+minDistBetweenSpots=2
+filterLo=2.15
+filterHi=1
+fittedRegionSize=3
+tol=0.01
+bgRegionThickness=1
+psfType=integratedGaussian
+maxIterations=100
+bgCorrectionMode=localPlane
+useLegacyFormats=0
+

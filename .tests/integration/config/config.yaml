@@ -1,0 +1,70 @@
+probes:
+  # What probes to analyze
+  ["probe_1", "probe_2"]
+
+
+light_trains:
+  # Light train (user friendly name) - (internal name) conversion
+  # Microscope specific, refer to OME-TIFF metadata
+  fish_t1: "T1"
+  fish_t2: "T2"
+  cytoplasm: "T3"
+  nucleus: "T4"
+
+data_roots:
+  # Basename for input/output data
+  input: "test_data"
+  input_ext: ".czi"  # Remember to keep the "."
+  generated_scripts: "generated_scripts"
+
+
+# Pipeline configurations
+segmentation:
+  model: "full_cell" # what model to use
+  device: "cpu" # either cuda or cpu
+pipeline_light_train: # which light trains to process for fishdot and segmentation
+  fishdot: "fish_t1"
+  segmentation: "cytoplasm"
+fishdot: # fishdot workflow parameters
+  psf_xy: "1.1" # PSF in xy direction, as defined by AIRLOCALIZE
+  psf_z: "3" # PSF in z direction, as defined by AIRLOCALIZE
+  threshold: "30" # threshold setting, global, as defined by AIRLOCALIZE
+resources:
+  # different resources allocated to the rules
+  threads:
+    segmentation: 1
+    fishdot: 2
+    sample_convert: 1
+    sample_singlechannel: 1
+  mem_mb:
+    segmentation: 7000
+    fishdot: 8000
+    sample_convert: 1000
+    sample_singlechannel: 1000
+  max_time:
+    segmentation: "1:00:00"
+    fishdot: "1:00:00"
+    sample_convert: "1:00:00"
+    sample_singlechannel: "1:00:00"
+
+
+# Internal method parameters
+segmentation_models:
+  # sets suitable internal method parameters given the segmentation model. Only change if new models are trained.
+  full_cell:
+    MIP: "onesided"
+    z_projection_physical: 0.6
+    encoder: "timm-efficientnet-b0"
+    weights: "imagenet"
+    augmentation_function: "augmentations_enhanceThenResize"
+    augmentation_function_params: {}  # if no parameter needed, put {} here
+    fill: true  # should we perform filling for the output prediction mask
+    target_pixels: 320
+
+# TODO: Legacy parameters - should be removed in the next release
+tools:
+  # sets file paths for running airlocalize and a legacy name for converter
+  converter: "bfconvert"
+  airlocalize: "resources/AIRLOCALIZE-main" # AIRLOCALIZE program
+  airlocalize_template_ini: "workflow/scripts/airlocalize_template.ini"
+  airlocalize_template_m: "workflow/scripts/airlocalize_template.m"
