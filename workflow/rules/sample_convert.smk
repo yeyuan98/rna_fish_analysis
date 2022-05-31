@@ -35,9 +35,7 @@ checkpoint sample_convert:
     params:
         inputs_parsed=lambda wildcards, input: json.dumps(input),
         output_dir=lambda wildcards, output: output[0]
-    container:
-        "library://yeyuan/rna_fish/main:bftools_python"
-    shell:
-        """
-        bfconvert_python '{params.inputs_parsed}' {params.output_dir}
-        """
+    conda:
+        "../envs/convert.yaml"
+    script:
+        "../scripts/mainflow_convert.py"

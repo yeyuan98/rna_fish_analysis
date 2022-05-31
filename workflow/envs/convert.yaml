@@ -1,0 +1,7 @@
+name: java
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - openjdk==8.0.152
+  - python==3.9.9
