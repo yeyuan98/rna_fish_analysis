@@ -19,7 +19,7 @@ def get_singlechannel_sample(wildcards):
 
 
 rule fishdot:
-    """singlechannel images -> dir"""
+    """singlechannel images -> dir. This workflow does NOT require python-end image processing."""
     input:
         get_singlechannel_sample
     output:
@@ -29,7 +29,7 @@ rule fishdot:
     resources:
         mem_mb=config["resources"]["mem_mb"]["fishdot"],
         time=config["resources"]["max_time"]["fishdot"]
-    conda:
-        "../envs/image.yaml"
+    envmodules:
+        "matlab"
     script:
         "../scripts/mainflow_fishdot.py"

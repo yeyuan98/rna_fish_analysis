@@ -6,7 +6,6 @@
 import os
 import subprocess
 import time
-import image_base
 from mainflow_helpers import *
 
 # fishdot
