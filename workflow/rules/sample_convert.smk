@@ -1,5 +1,6 @@
 from snake_helper import *
 import json
+from os.path import splitext
 
 
 #  INPUT FUNCTION (probe, sample) -> paths to RAW input images
@@ -15,7 +16,8 @@ def input_sample_images(wildcards, config):
     sample = wildcards.sample
     pathbase = join(config["data_roots"]["input"], probe, sample)
     images = listdir(pathbase)
-    images = [f for f in images if not f.startswith(".")]
+    images = [f for f in images if not f.startswith('.')]  # filters out hidden files
+    images = [f for f in images if splitext(f)[1] == config["data_roots"]["input_ext"]]  # only keep correct extension files
     return [join(pathbase, image) for image in images]
 
 

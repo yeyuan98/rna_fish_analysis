@@ -1,6 +1,6 @@
 probes:
   # What probes to analyze
-  ["per", "tim"]
+  ["probe_1", "probe_2"]
 
 
 light_trains:
@@ -13,7 +13,7 @@ light_trains:
 
 data_roots:
   # Basename for input/output data
-  input: "raw_data"
+  input: "test_data"
   input_ext: "czi"
   generated_scripts: "generated_scripts"
 
