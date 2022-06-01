@@ -3,6 +3,5 @@ channels:
   - conda-forge
   - ome
 dependencies:
-  - openjdk==8.0.152
-  - python==3.9.9
-  - bftools==6.9.1
+  - python=3.9
+  - bftools=6.9.1
