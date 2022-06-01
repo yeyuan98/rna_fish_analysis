@@ -22,14 +22,14 @@ def test_sample_singlechannel():
         shutil.copytree(data_path, workdir)
 
         # dbg
-        print("results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv3 1.5 cells.tif", file=sys.stderr)
+        print("results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv2 single cell.tif", file=sys.stderr)
 
         # Run the test job.
         sp.check_output([
             "python",
             "-m",
             "snakemake", 
-            "results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv3 1.5 cells.tif",
+            "results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv2 single cell.tif",
             "-f", 
             "-j1",
             "--keep-target-files",

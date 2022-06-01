@@ -1,6 +1,6 @@
 [Files]
-dataFileName=/gpfs/accounts/swathi_root/swathi0/yeyu/rnafish/results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv2 single cell.tif
-saveDirName=/gpfs/accounts/swathi_root/swathi0/yeyu/rnafish/results/probe_1/Apr_2022_ZT0/fishdot/fish_t1++1.1+3+30
+dataFileName=/Users/yeyuan/Dropbox_umich/PhD/Projects/Drosophila/scripts/python_U-Net_segmentation/snakemake_workflow/publishing_version/results/probe_1/Apr_2022_ZT0/single_channel/fish_t1/lLNv2 single cell.tif
+saveDirName=/Users/yeyuan/Dropbox_umich/PhD/Projects/Drosophila/scripts/python_U-Net_segmentation/snakemake_workflow/publishing_version/results/probe_1/Apr_2022_ZT0/fishdot/fish_t1++1.1+3+30
 fileProcessingMode=singleFile
 inclusionString=
 recursive=0
