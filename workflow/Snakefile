@@ -1,6 +1,5 @@
 from rules.snake_helper import *
 
-
 configfile: "config/config.yaml"
 
 include: "rules/sample_convert.smk"

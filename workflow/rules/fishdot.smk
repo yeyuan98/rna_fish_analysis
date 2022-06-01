@@ -29,8 +29,6 @@ rule fishdot:
     resources:
         mem_mb=config["resources"]["mem_mb"]["fishdot"],
         time=config["resources"]["max_time"]["fishdot"]
-    conda:
-        "../envs/convert.yaml"
     envmodules:
         "matlab"
     script:
