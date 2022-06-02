@@ -26,7 +26,7 @@ checkpoint sample_convert:
     input:
         lambda wildcards: input_sample_images(wildcards, config = config)
     output:
-        directory(join("results", "{probe}","{sample}", output_workflow("convert", config)))
+        directory(join("results", "{probe}","{sample}", "convert", output_workflow("convert", config)))
     threads:
         config["resources"]["threads"]["sample_convert"]
     resources:

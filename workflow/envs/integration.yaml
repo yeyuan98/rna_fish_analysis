@@ -1,0 +1,8 @@
+channels:
+  - r
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base
+  - r-tidyverse
+  - bioconductor-ebimage

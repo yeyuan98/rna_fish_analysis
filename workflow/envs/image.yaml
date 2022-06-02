@@ -7,6 +7,7 @@ dependencies:
   - torchvision=0.12.0
   - torchaudio=0.11.0
   - cpuonly=2.0
+  - pandas=1.4  # used by integration only
   - pip
   - pip:
       - numpy==1.21.4

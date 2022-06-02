@@ -1,5 +1,4 @@
-from os import listdir
-from os.path import join
+from snake_helper import *
 
 
 # INPUT FUNCTION (probe, sample, channel) -> full paths to single channel images
@@ -23,7 +22,7 @@ rule segmentation:
     input:
         get_singlechannel_sample
     output:
-        directory(join("results", "{probe}", "{sample}", "segmentation", "{light_train}++{params}"))
+        directory(join("results", "{probe}", "{sample}", "segmentation", output_workflow("segmentation", config)))
     threads:
         config["resources"]["threads"]["segmentation"]
     resources:

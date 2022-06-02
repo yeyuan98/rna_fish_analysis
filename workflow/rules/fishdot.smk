@@ -1,5 +1,4 @@
-from os import listdir
-from os.path import join
+from snake_helper import *
 
 
 # INPUT FUNCTION (probe, sample, channel) -> full paths to single channel images
@@ -23,7 +22,7 @@ rule fishdot:
     input:
         get_singlechannel_sample
     output:
-        directory(join("results", "{probe}", "{sample}", "fishdot", "{light_train}++{params}"))
+        directory(join("results", "{probe}", "{sample}", "fishdot", output_workflow("fishdot", config)))
     threads:
         config["resources"]["threads"]["fishdot"]
     resources:

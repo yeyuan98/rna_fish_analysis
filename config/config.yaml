@@ -32,16 +32,19 @@ fishdot: # fishdot workflow parameters
 resources:
   # different resources allocated to the rules
   threads:
+    integration: 1
     segmentation: 1
     fishdot: 2
     sample_convert: 1
     sample_singlechannel: 1
   mem_mb:
+    integration: 7000
     segmentation: 7000
     fishdot: 8000
     sample_convert: 1000
     sample_singlechannel: 1000
   max_time:
+    integration: "1:00:00"
     segmentation: "1:00:00"
     fishdot: "1:00:00"
     sample_convert: "1:00:00"
