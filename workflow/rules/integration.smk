@@ -13,18 +13,6 @@ def get_probe_samples(wildcards, config):
     return [join(result_base, sn) for sn in sample_names]
 
 
-def output_workflow_all(config):
-    """
-        Based on snake_helper to generate a single string representing all workflow parameters
-    :param config: snakemake config
-    :return: string
-    """
-    result =  "convert_" + output_workflow("convert", config)
-    result += "_segmentation_" + output_workflow("segmentation", config)
-    result += "_fishdot_" + output_workflow("fishdot", config)
-    return result
-
-
 rule integration_summarize:
     """integrates all images in a specific probe x sample to get the final fishdot list"""
     input:

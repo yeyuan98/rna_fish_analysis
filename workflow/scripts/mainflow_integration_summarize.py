@@ -5,6 +5,7 @@
 
 import image_base
 from snake_helper import *
+from mainflow_helpers import *
 import csv
 
 
@@ -15,7 +16,7 @@ def query_images_by_converted(sample_path, config):  # TODO
     :param config: snakemake config
     :return: a list of image names (NOT path) without any extension
     """
-    converted_path = join(sample_path, "convert", output_workflow("convert", config))  # get path to converted image dir
+    converted_path = join(sample_path, output_workflow("convert", config))  # get path to converted image dir
     images_converted = listdir(converted_path)  # listdir
     images_converted = [f for f in images_converted if not f.startswith(".")]  # remove hidden files
     images_converted = [f for f in images_converted if (f.find(".ome.tif") >= 0)]  # look for .ome.tif files
@@ -39,12 +40,14 @@ def summarize(sample_paths, output_file_path, config):
     rows = []
     for sample_path in sample_paths:
         image_names = query_images_by_converted(sample_path, config)
+        sample_name = split(sample_path)[1]
+        print_current_time("Processing sample: " + sample_name)
         for image_name in image_names:
             # columns:
-            mask_path = join("segmentation", output_workflow("segmentation", config), image_name + ".tif")
-            fishdot_path = join("fishdot", output_workflow("fishdot", config), image_name + ".loc4")
-            sample_name = split(sample_path)[1]
-            converted_path = join("convert", output_workflow("convert", config), image_name + ".ome.tif")
+            mask_path = join(sample_path, output_workflow("segmentation", config), image_name + ".tif")
+            fishdot_path = join(sample_path, output_workflow("fishdot", config), image_name + ".loc4")
+            converted_path = join(sample_path, output_workflow("convert", config), image_name + ".ome.tif")
+            print_current_time("      converted image path: " + converted_path)
             pixel_sizes = image_base.load_pixelSizes(converted_path)
             rows.append([sample_name, mask_path, fishdot_path, pixel_sizes[0], pixel_sizes[1], pixel_sizes[2]])
     with open(output_file_path, 'w') as csvfile:

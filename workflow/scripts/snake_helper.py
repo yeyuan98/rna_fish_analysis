@@ -1,7 +1,4 @@
 """Helper functions useful for the snakemake path wrangling"""
-#  TODO: Somehow keep this snake_helper copy consistent with the major helper used in ../rules
-#  This should be kept consistent with ../rules/snake_helper.py.
-#  Used by integration workflow to generate paths.
 from os.path import join, split
 from os import listdir
 
@@ -27,7 +24,8 @@ def output_workflow(workflow, config):
     """
     result = ""
     if workflow == "convert":
-        result = "bfconvert"
+        params = "bfconvert"
+        result = join("convert", params)
     elif workflow == "fishdot":
         params = "+".join(config["fishdot"].values())
         params = config["pipeline_light_train"]["fishdot"] + "++" + params
@@ -38,6 +36,19 @@ def output_workflow(workflow, config):
         result = join("segmentation", params)
     else:
         raise ValueError("Unsupported workflow")
+    return result
+
+
+def output_workflow_all(config):
+    """
+        Based on snake_helper to generate a single string representing all workflow parameters
+    :param config: snakemake config
+    :return: string
+    """
+    result = output_workflow("convert", config)
+    result += "*" + output_workflow("segmentation", config)
+    result += "*" + output_workflow("fishdot", config)
+    result = result.replace("/", "_")
     return result
 
 
