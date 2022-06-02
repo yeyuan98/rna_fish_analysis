@@ -2,8 +2,6 @@
 from os.path import join, split
 from os import listdir
 
-import yaml
-
 
 def samples_get(config, probe):
     """

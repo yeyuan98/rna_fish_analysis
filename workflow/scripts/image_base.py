@@ -100,3 +100,17 @@ def save_channel(in_path, out_path, name):
     img_PhysicalSize['axes'] = 'ZYX'
     tf.imwrite(out_path, img_ch,
                metadata=img_PhysicalSize)  # Write image with PhysicalSize
+
+
+def load_pixelSizes(path):
+    """
+        Reads an OME-TIFF file and fetch its physical sizes settings, returning a list for [X, Y, Z].
+    :param path: path to an OME-TIFF file
+    :return: a list of physical pixel sizes, in the order of [X, Y, Z]
+    """
+    f = load_image(path)
+    pixels = get_pixelsettings(f)
+    try:
+        return [pixels["PhysicalSizeX"], pixels["PhysicalSizeY"], pixels["PhysicalSizeZ"]]
+    except:
+        raise ValueError("Target OME-TIFF file does not contain all PhysicalSizesXYZ info.")

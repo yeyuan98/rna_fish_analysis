@@ -1,13 +1,16 @@
 from snake_helper import *
 
 # INPUT FUNCTION (probe) -> full paths to cell segmentation masks
-def get_probe_samples(wildcards):
+def get_probe_samples(wildcards, config):
     """
         Get a list of major result directory paths (results/{probe}/{sample}) to different samples of a given probe
     :param wildcards: input function
+    :param config: snakemake config
     :return: a list of paths to dirs
     """
-    pass  # TODO
+    sample_names = samples_get(config, wildcards.probe)
+    result_base = join("results", wildcards.probe)
+    return [join(result_base, sn) for sn in sample_names]
 
 
 def output_workflow_all(config):
@@ -25,7 +28,7 @@ def output_workflow_all(config):
 rule integration_summarize:
     """integrates all images in a specific probe x sample to get the final fishdot list"""
     input:
-        get_probe_samples
+        lambda wildcards: get_probe_samples(wildcards, config = config)
     output:
         join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv")
     threads:
