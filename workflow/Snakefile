@@ -6,6 +6,7 @@ include: "rules/sample_convert.smk"
 include: "rules/sample_singlechannel.smk"
 include: "rules/fishdot.smk"
 include: "rules/segmentation.smk"
+include: "rules/integration.smk"
 
 rule all:
     input:

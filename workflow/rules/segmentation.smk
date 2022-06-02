@@ -22,7 +22,7 @@ rule segmentation:
     input:
         get_singlechannel_sample
     output:
-        directory(join("results", "{probe}", "{sample}", "segmentation", output_workflow("segmentation", config)))
+        directory(join("results", "{probe}", "{sample}", "segmentation", "{light_train}++{params}"))
     threads:
         config["resources"]["threads"]["segmentation"]
     resources:

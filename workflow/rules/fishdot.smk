@@ -22,7 +22,7 @@ rule fishdot:
     input:
         get_singlechannel_sample
     output:
-        directory(join("results", "{probe}", "{sample}", "fishdot", output_workflow("fishdot", config)))
+        directory(join("results", "{probe}", "{sample}", "fishdot", "{light_train}++{params}"))
     threads:
         config["resources"]["threads"]["fishdot"]
     resources:
