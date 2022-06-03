@@ -24,11 +24,12 @@ def query_images_by_converted(sample_path, config):  # TODO
     return images_converted
 
 
-def summarize(sample_paths, output_file_path, config):
+def summarize(sample_paths, output_file_paths, config):
     """
         Generates summary entry for each image file of a given probe.
     :param sample_paths: list of paths to different sample dirs
-    :param output_file_path: path to the specified output file
+    :param output_file_paths: named paths to the specified output files
+        samples is for per image summary and plot is for per sample configuration of plotting
     :param config: snakemake config
     """
     # For each sample directory path
@@ -36,11 +37,16 @@ def summarize(sample_paths, output_file_path, config):
     #   For each image file
     #       get each data of interest, append to result lists
     # Write to csv with core csv module
-    header = ["sample", "mask_path", "fishdot_path", "physicalSizeX", "physicalSizeY", "physicalSizeZ"]
-    rows = []
+    output_samples_path = output_file_paths['samples']
+    output_plot_path = output_file_paths['plot']
+    samples_header = ["sample", "image", "mask_path", "fishdot_path", "physicalSizeX", "physicalSizeY", "physicalSizeZ"]
+    samples_rows = []
+    plot_header = ["sample"]
+    plot_rows = []
     for sample_path in sample_paths:
         image_names = query_images_by_converted(sample_path, config)
         sample_name = split(sample_path)[1]
+        plot_rows.append([sample_name])
         print_current_time("Processing sample: " + sample_name)
         for image_name in image_names:
             # columns:
@@ -49,11 +55,16 @@ def summarize(sample_paths, output_file_path, config):
             converted_path = join(sample_path, output_workflow("convert", config), image_name + ".ome.tif")
             print_current_time("      converted image path: " + converted_path)
             pixel_sizes = image_base.load_pixelSizes(converted_path)
-            rows.append([sample_name, mask_path, fishdot_path, pixel_sizes[0], pixel_sizes[1], pixel_sizes[2]])
-    with open(output_file_path, 'w') as csvfile:
+            samples_rows.append([sample_name, image_name,
+                                 mask_path, fishdot_path, pixel_sizes[0], pixel_sizes[1], pixel_sizes[2]])
+    with open(output_samples_path, 'w') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(header)
-        writer.writerows(rows)
+        writer.writerow(samples_header)
+        writer.writerows(samples_rows)
+    with open(output_plot_path, 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(plot_header)
+        writer.writerows(plot_rows)
 
 try:
     snakemake

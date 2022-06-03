@@ -6,15 +6,13 @@ import tifffile as tf
 import numpy as np
 import csv
 from os.path import split, splitext
-#  TODO
 
 
-def integration_overlap(samples_csv, dots_csv, config):
+def integration_overlap(samples_csv, dots_csv):
     """
         For each image file in samples_csv, reads in segmentation mask and dots list, and performs union.
     :param samples_csv: Path to the integrated per image information
     :param dots_csv: Path to the output dots csv file
-    :param config: snakemake config
     """
     result = []  # will be a list of dicts for csv.DictWriter.
     with open(samples_csv, 'r') as csvfile:
@@ -51,4 +49,4 @@ try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow integration is only compatible with snakemake script directive.")
-integration_overlap(snakemake.input[0], snakemake.output[0], snakemake.config)
+integration_overlap(snakemake.input[0], snakemake.output[0])

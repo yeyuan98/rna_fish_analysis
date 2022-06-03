@@ -18,7 +18,8 @@ rule integration_summarize:
     input:
         lambda wildcards: get_probe_samples(wildcards, config = config)
     output:
-        join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv")
+        samples=join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv"),
+        plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv")
     threads:
         config["resources"]["threads"]["integration"]
     resources:

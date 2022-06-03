@@ -6,7 +6,8 @@ include: "rules/sample_convert.smk"
 include: "rules/sample_singlechannel.smk"
 include: "rules/fishdot.smk"
 include: "rules/segmentation.smk"
-include: "rules/integration.smk"
+include: "rules/integration_summarize.smk"
+include: "rules/integration_processing.smk"
 
 localrules: all, integration
 
@@ -21,4 +22,5 @@ print(output_workflow_all(config))
 
 rule integration:
     input:
-        join("results","probe_1","integration", output_workflow_all(config), "samples.csv")
+        #join("results","probe_1","integration", output_workflow_all(config), "samples.csv"),
+        join("results","probe_1","integration", output_workflow_all(config), "dots.csv")
