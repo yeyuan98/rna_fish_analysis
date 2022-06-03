@@ -6,6 +6,7 @@
 import os
 import subprocess
 from mainflow_helpers import *
+from platform import system
 
 
 def sample_convert(inputs, output_dir):
@@ -24,7 +25,12 @@ def sample_convert(inputs, output_dir):
         in_path = inputs[i]
         out_path = output_paths[i]
         print_current_time("Running conversion for " + in_path)
-        run = subprocess.run(["bfconvert", "-no-upgrade", in_path, out_path], capture_output=True)
+        if system() == 'Windows':
+            # Windows need the .bat, and although shell call `bfconvert` will automatically look for bfconvert.bat,
+            # subprocess.run is handled by Python with shell=False default, and you need the explicit .bat in place.
+            run = subprocess.run(["bfconvert.bat", in_path, out_path], capture_output=True)
+        else:
+            run = subprocess.run(["bfconvert", in_path, out_path], capture_output=True)
         print_check_run_info(run)
         print_current_time("Done conversion")
 
