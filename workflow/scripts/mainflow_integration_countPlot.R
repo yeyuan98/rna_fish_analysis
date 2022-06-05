@@ -42,6 +42,8 @@ tryCatch({
 tryCatch({
   yaml.path <- file.path(dirname(snakemake@input[['samples']]), "plot.yaml")
   plot.config <- yaml.load_file(yaml.path)
+  plot.xlab <- plot.config$xlab
+  plot.ylab <- plot.config$ylab  # If any of these are not given, NULL will be the value.
 }, error = function(e) {message(paste("To further configure your plots:", instruction.plot.yaml, sep = "\n"))})
 
 # Check completeness of samples data (all columns present?)
