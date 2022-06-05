@@ -4,9 +4,10 @@ rule integration_countPlot:
     """getting the counts/cell ~ group plot"""
     input:
         samples=join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv"),
-        plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv")
+        plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv"),
+        dots=join("results", "{probe}", "integration", output_workflow_all(config), "dots.csv")
     output:
-        join("results","{probe}","integration",output_workflow_all(config),"plot.pdf")
+        plot=join("results","{probe}","integration",output_workflow_all(config),"countPlot.pdf")
     threads:
         config["resources"]["threads"]["integration"]
     resources:

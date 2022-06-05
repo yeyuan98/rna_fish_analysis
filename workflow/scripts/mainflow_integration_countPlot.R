@@ -20,32 +20,83 @@ if (T){
   instruction.plot.yaml <- "
     If plot.yaml exists in the same folder as samples.csv, the script will use it for plot customization:
       --- only put in top level entries ---
-      entry       ggplot2_param     default
-      xlab        xlab()            'group'
-      ylab        ylab()            'counts/cell'
+      entry         ggplot2_param     default
+      xlab          xlab()            'group'
+      ylab          ylab()            'counts/cell'
+      base_fs       theme(base_size)  24
+      group_prefix  NA                NULL
+      ymin          scale_y           NA
+      ymax          scale_y           NA
+    group_prefix is used for creating ordered x-axi labels. Your group in plot.csv must be numerical.
   "
 }
 
 library(tidyverse)
 library(yaml)
+source("workflow/scripts/mainflow_integration_countPlot_helper.R")
 
 # Determine context
 tryCatch(snakemake, error = function(e) stop("Workflow script is only callable via snakemake."))
 
 # Read in samples and plot integration data
 tryCatch({
-  samples <- read_csv(snakemake@input[['samples']])
-  plot <- read_csv(snakemake@input[['plot']])
-}, error = function(e) stop("Could not read samples and/or plot integration data."))
+  samples <- read_csv(snakemake@input[['samples']], show_col_types = F)
+  plot <- read_csv(snakemake@input[['plot']], show_col_types = F)
+  dots <- read_csv(snakemake@input[['dots']], show_col_types = F)
+
+  # Special - group parameter must be integer for plotting x-axis, and we check this
+  tryCatch(plot$group <- as.integer(plot$group),
+          warning = function(e) stop("Group must be integer for plotting"))
+}, error = function(e) stop("Could not read samples and/or plot and/or dots integration data."))
 
 # Read in optional plot.yaml and throw a message if not present
 tryCatch({
   yaml.path <- file.path(dirname(snakemake@input[['samples']]), "plot.yaml")
   plot.config <- yaml.load_file(yaml.path)
+  plot.xlab <- plot.config$xlab
+  plot.ylab <- plot.config$ylab  # If any of these are not given, NULL will be the value.
+  plot.basefs <- plot.config$base_fs
+  group.prefix <- plot.config$group_prefix
+  plot.ymin <- plot.config$ymin
+  plot.ymax <- plot.config$ymax
 }, error = function(e) {message(paste("To further configure your plots:", instruction.plot.yaml, sep = "\n"))})
 
 # Check completeness of samples data (all columns present?)
+tryCatch({
+  verify.samples(samples)
+}, error = function(e) stop(instruction.samples))
 
 # Check completeness of plot data (all columns present?)
+tryCatch({
+  verify.plot.csv(plot)
+}, error = function(e) stop(instruction.plot.csv))
+
+# Process plot parameter defaults
+plot.xlab <- ifelse(is.null(plot.xlab), "Group", plot.xlab)
+plot.ylab <- ifelse(is.null(plot.ylab), "dots/cell", plot.ylab)
+plot.basefs <- ifelse(is.null(plot.basefs), 24, as.integer(plot.basefs))
 
 # Get the plot
+theme_set(theme_classic(base_size = plot.basefs))
+dots %>%
+  inner_join(plot, by = "sample") %>%
+  inner_join(samples, by = c("sample", "image")) %>%
+  group_by(group, image, sample) %>%
+  summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") %>%
+  mutate(group = ordered(as.integer(group))) -> dots
+
+# Special - prepend level prefix for x-axis
+attr(dots$group, "levels") <- paste0(group.prefix, attr(dots$group, "levels"))
+
+dots %>%
+  mutate(dots.per.cell = dot.count / num.cells) %>%
+  ggplot(aes(x = group, y = dots.per.cell))+
+  geom_point()+
+  scale_y_continuous(expand = c(0,0), limits = c(plot.ymin, plot.ymax))+
+  xlab(plot.xlab)+
+  ylab(plot.ylab) -> plot.countPlot
+
+out.path <- snakemake@output[["plot"]]
+ggsave(filename = basename(out.path),
+       path = dirname(out.path),
+       dpi = "retina")

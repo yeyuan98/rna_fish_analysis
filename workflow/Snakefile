@@ -21,6 +21,12 @@ rule all:
 print(output_workflow_all(config))
 
 rule integration:
+    # Step I integration - create summary and dot overlap files
     input:
         #join("results","probe_1","integration", output_workflow_all(config), "samples.csv"),
         join("results","probe_1","integration", output_workflow_all(config), "dots.csv")
+
+rule countplot:
+    # Step II integration - create the count plot
+    input:
+        join("results","probe_1","integration",output_workflow_all(config),"countPlot.pdf")

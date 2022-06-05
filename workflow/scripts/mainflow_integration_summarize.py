@@ -70,4 +70,4 @@ try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow integration_summarize is only compatible with snakemake script directive.")
-summarize(snakemake.input, snakemake.output[0], snakemake.config)
+summarize(snakemake.input, snakemake.output, snakemake.config)
