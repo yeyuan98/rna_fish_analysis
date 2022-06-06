@@ -4,7 +4,7 @@
 
 import os
 
-
+#  Constant template file paths and the AIRLOCALIZE external script path
 AIRLOCALIZE_template_ini_path = "workflow/scripts/airlocalize_template.ini"
 AIRLOCALIZE_template_m_path = "workflow/scripts/airlocalize_template.m"
 AIRLOCALIZE_root = "resources/AIRLOCALIZE-main"

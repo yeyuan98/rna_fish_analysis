@@ -2,6 +2,16 @@ probes:
   # What probes to analyze
   ["probe_1", "probe_2"]
 
+pipeline_light_train: # which light trains to process for fishdot and segmentation
+  fishdot: "fish_t1"
+  segmentation: "cytoplasm"
+
+data_roots:
+  # Basename for input/output data
+  input: "test_data"
+  input_ext: ".czi"  # Remember to keep the "."
+  generated_scripts: "generated_scripts"
+
 
 light_trains:
   # Light train (user friendly name) - (internal name) conversion
@@ -11,24 +21,16 @@ light_trains:
   cytoplasm: "T3"
   nucleus: "T4"
 
-data_roots:
-  # Basename for input/output data
-  input: "test_data"
-  input_ext: ".czi"  # Remember to keep the "."
-  generated_scripts: "generated_scripts"
-
-
-# Pipeline configurations
+# Workflow-specific configurations
 segmentation:
   model: "full_cell" # what model to use
   device: "cpu" # either cuda or cpu
-pipeline_light_train: # which light trains to process for fishdot and segmentation
-  fishdot: "fish_t1"
-  segmentation: "cytoplasm"
-fishdot: # fishdot workflow parameters
+fishdot:
   psf_xy: "1.1" # PSF in xy direction, as defined by AIRLOCALIZE
   psf_z: "3" # PSF in z direction, as defined by AIRLOCALIZE
   threshold: "30" # threshold setting, global, as defined by AIRLOCALIZE
+
+# Resource allocation defaults
 resources:
   # different resources allocated to the rules
   threads:
@@ -63,11 +65,3 @@ segmentation_models:
     augmentation_function_params: {}  # if no parameter needed, put {} here
     fill: true  # should we perform filling for the output prediction mask
     target_pixels: 320
-
-# TODO: Legacy parameters - should be removed in the next release
-tools:
-  # sets file paths for running airlocalize and a legacy name for converter
-  converter: "bfconvert"
-  airlocalize: "resources/AIRLOCALIZE-main" # AIRLOCALIZE program
-  airlocalize_template_ini: "workflow/scripts/airlocalize_template.ini"
-  airlocalize_template_m: "workflow/scripts/airlocalize_template.m"
