@@ -5,10 +5,10 @@
 # General I/O
 import os
 import subprocess
-from mainflow_helpers import *
+from helpers_and_sources.mainflow_helpers import *
 
 # fishdot
-import generators
+from helpers_and_sources import generators
 
 
 def fishdot(inputs, output_dir, wildcards, config):

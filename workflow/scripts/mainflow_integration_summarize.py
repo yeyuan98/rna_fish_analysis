@@ -3,13 +3,14 @@
         mask path, fishdot path, sample name, pixel size x, pixel size y, pixel size z
 """
 
-import image_base
+from helpers_and_sources.integration_visualize import visualize
+from helpers_and_sources import image_base
 from snake_helper import *
-from mainflow_helpers import *
+from helpers_and_sources.mainflow_helpers import *
 import csv
 
 
-def query_images_by_converted(sample_path, config):  # TODO
+def query_images_by_converted(sample_path, config):
     """
         Get a list of images (without extension) by looking at sample_convert workflow output
     :param sample_path: path to the sample result folder
@@ -65,6 +66,10 @@ def summarize(sample_paths, output_file_paths, config):
         writer = csv.writer(csvfile)
         writer.writerow(plot_header)
         writer.writerows(plot_rows)
+    print_current_time("Done summary. Aggregating images for visualization...")
+    output_vis_path = output_file_paths['visualization']
+    visualize(output_samples_path, output_vis_path)
+
 
 try:
     snakemake

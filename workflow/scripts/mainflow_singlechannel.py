@@ -2,7 +2,7 @@
     Script for the single channel extraction workflow
 """
 import os
-import image_base
+from helpers_and_sources import image_base
 
 
 def sample_singlechannel(inputs, output_dir, light_train, config):

@@ -5,7 +5,7 @@
 # General I/O
 import os
 import subprocess
-from mainflow_helpers import *
+from helpers_and_sources.mainflow_helpers import *
 from platform import system
 
 

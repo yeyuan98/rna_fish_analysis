@@ -2,13 +2,11 @@
     Script for the segmentation workflow
 """
 import os
-from mainflow_helpers import *
+from helpers_and_sources.mainflow_helpers import *
 import tifffile as tf
 import torch
 import numpy as np
-import image_operators
-import image_augmentations
-import image_segmentation_model
+from helpers_and_sources import image_augmentations, image_operators, image_segmentation_model
 from tqdm import tqdm
 
 

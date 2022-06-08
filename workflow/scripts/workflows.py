@@ -4,18 +4,14 @@
 import os
 import subprocess
 import time
-import image_base
 
 # fishdot
-import generators
+from helpers_and_sources import generators, image_augmentations, image_operators, image_segmentation_model
 
 # segmentation
 from tqdm import tqdm
 import tifffile as tf
 import numpy as np
-import image_operators
-import image_augmentations
-import image_segmentation_model
 import torch
 
 

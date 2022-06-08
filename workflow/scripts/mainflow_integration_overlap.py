@@ -1,7 +1,7 @@
 """
     Workflow script to get fish dots in the given segmentation mask
 """
-from mainflow_helpers import *
+from helpers_and_sources.mainflow_helpers import *
 import tifffile as tf
 import numpy as np
 import csv

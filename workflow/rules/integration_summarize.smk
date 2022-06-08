@@ -1,5 +1,10 @@
 from snake_helper import *
 
+"""
+    Generates summary tables for later integration steps.
+    Rule integration_summarize is required for all other integration rules.
+"""
+
 # INPUT FUNCTION (probe) -> full paths to cell segmentation masks
 def get_probe_samples(wildcards, config):
     """
@@ -19,7 +24,8 @@ rule integration_summarize:
         lambda wildcards: get_probe_samples(wildcards, config = config)
     output:
         samples=join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv"),
-        plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv")
+        plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv"),
+        visualization=directory(join("results", "{probe}", "integration", output_workflow_all(config), "visualization"))
     threads:
         config["resources"]["threads"]["integration"]
     resources:
