@@ -14,7 +14,9 @@ ALL AUGMENTATION FUNCTIONS MUST SUPPORT AUGMENTATION OF MASK (dtype=np.uint8) AN
 
 import numpy as np
 import cv2 as cv
-from image_operators import imStackAutoAdjust
+# TODO: use package relative import for more pythonic code.
+# noinspection PyUnresolvedReferences
+from helpers_and_sources.image_operators import imStackAutoAdjust  # Search path includes scripts folder only.
 
 
 # Helper functions for augmentations

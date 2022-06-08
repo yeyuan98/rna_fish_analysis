@@ -8,7 +8,8 @@
 """
 
 from os.path import join
-from mainflow_helpers import *
+# TODO: use package relative import for more pythonic code.
+from helpers_and_sources.mainflow_helpers import *
 import tifffile as tf  # image_base will not be that useful here
 import numpy as np
 from re import search
@@ -61,11 +62,12 @@ def visualize(samples_csv_path, output_dir_base):
             imgs = [tf.TiffFile(fp).asarray() for fp in [marker_path, mask_path, rawfish_path, fishdot_path]]
             img_shape = imgs[0].shape  # zyx for tifffile
             img_shape_z = img_shape[0]
-            img_vis = np.empty(img_shape_z + (4,) + img_shape[1:], dtype=np.uint16)  # shape = zcyx
+            img_vis = np.empty((img_shape_z,) + (4,) + img_shape[1:], dtype=np.uint16)  # shape = zcyx
             for i in range(4):
                 img_vis[:, i, :, :] = imgs[i]
             output_path = join(output_dir_base, sample)  # Output path part I - sample folder level
             os.makedirs(output_path, exist_ok=True)  # Make sure to create the sample folder
             output_path = join(output_path, row['image'] + ".tif")  # Full output path
-            tf.imwrite(output_path, img_vis, photometric='minisblack')
+            # TODO: more deterministic behavior for imwrite
+            tf.imwrite(output_path, img_vis)  # Will automatically infer photometric.
             print_current_time("Visualization written for " + sample + "  " + image)

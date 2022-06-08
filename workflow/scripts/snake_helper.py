@@ -1,4 +1,5 @@
 """Helper functions useful for the snakemake path wrangling"""
+# TODO: Only keep one copy of snake_helper for sharing with ../rules and here.
 from os.path import join, split
 from os import listdir
 
