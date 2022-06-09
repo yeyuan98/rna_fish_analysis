@@ -36,7 +36,9 @@ library(yaml)
 source("workflow/scripts/mainflow_integration_countPlot_helper.R")
 
 # Determine context
-tryCatch(snakemake, error = function(e) stop("Workflow script is only callable via snakemake."))
+if (!exists("snakemake")){
+  stop("Workflow script is only callable via snakemake.")
+}
 
 # Read in samples and plot integration data
 tryCatch({

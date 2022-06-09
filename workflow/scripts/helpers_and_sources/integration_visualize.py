@@ -23,6 +23,8 @@ def getChannelNameFromPath(path):
         :param path: path string to a segmentation or fishdot output
             This function looks for /*++ pattern and extracts the *
     """
+    if os.name == 'nt':
+        path = path.replace("\\", "/")
     path = path[::-1]
     path = search(r"\+\+(.*?)/", path)
     return (path.groups()[0])[::-1]
@@ -53,7 +55,10 @@ def visualize(samples_csv_path, output_dir_base):
             #   Third, get base folder leading to the singlechannel
             sample = row['sample']
             image = row['image']
-            probe_folder_path = search("(.*?)"+os.sep+sample, mask_path).groups()[0]
+            path_sep = os.sep  # windows-specific fix
+            if path_sep == '\\':
+                path_sep = '\\\\'
+            probe_folder_path = search("(.*?)"+path_sep+sample, mask_path).groups()[0]
             sc_base_path = join(probe_folder_path, sample, "single_channel")
             marker_path = join(sc_base_path, segmentation_channel, image + ".tif")
             rawfish_path = join(sc_base_path, fishdot_channel, image + ".tif")
