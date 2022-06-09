@@ -69,5 +69,7 @@ def visualize(samples_csv_path, output_dir_base):
             os.makedirs(output_path, exist_ok=True)  # Make sure to create the sample folder
             output_path = join(output_path, row['image'] + ".tif")  # Full output path
             # TODO: more deterministic behavior for imwrite
-            tf.imwrite(output_path, img_vis)  # Will automatically infer photometric.
+            tf.imwrite(output_path, img_vis,
+                       compression=tf.TIFF.COMPRESSION.DEFLATE, imagej=True,
+                       metadata={'axes': 'ZCYX'})  # Will automatically infer photometric.
             print_current_time("Visualization written for " + sample + "  " + image)
