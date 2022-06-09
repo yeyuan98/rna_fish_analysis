@@ -47,8 +47,8 @@ def output_workflow_all(config):
     :return: string
     """
     result = output_workflow("convert", config)
-    result += "*" + output_workflow("segmentation", config)
-    result += "*" + output_workflow("fishdot", config)
+    result += "&" + output_workflow("segmentation", config)
+    result += "&" + output_workflow("fishdot", config)
     result = result.replace("/", "_")
     if sysname == 'nt':
         result = result.replace("\\", "_")
