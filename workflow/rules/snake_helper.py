@@ -1,6 +1,7 @@
 """Helper functions useful for the snakemake path wrangling"""
-from os.path import join, split
+from os.path import join
 from os import listdir
+from os import name as sysname
 
 
 def samples_get(config, probe):
@@ -49,6 +50,8 @@ def output_workflow_all(config):
     result += "*" + output_workflow("segmentation", config)
     result += "*" + output_workflow("fishdot", config)
     result = result.replace("/", "_")
+    if sysname == 'nt':
+        result = result.replace("\\", "_")
     return result
 
 
