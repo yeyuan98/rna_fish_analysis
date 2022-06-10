@@ -9,7 +9,7 @@ include: "rules/segmentation.smk"
 include: "rules/integration_summarize.smk"
 include: "rules/integration_processing.smk"
 
-localrules: all, integration
+localrules: all, int_sum, int_plot
 
 rule all:
     input:
@@ -18,16 +18,15 @@ rule all:
         output_sample_dirs(workflow="fishdot", config = config, target=None),
         output_sample_dirs(workflow="segmentation", config = config, target=None)
 
-print(output_workflow_all(config))
+print("parameter combination is " + output_workflow_all(config))
 
-rule integration:
+rule int_sum:
     # Step I integration - create summary and dot overlap files
     input:
-        join("results","probe_1","integration", output_workflow_all(config), "samples.csv"),
-        join("results","probe_1","integration", output_workflow_all(config), "dots.csv")
+        output_integration_all(stage = "summarize", config = config)
 
-rule countplot:
+rule int_plot:
     # Step II integration - create the count plot
     # Requires modification to the integration output
     input:
-        join("results","probe_1","integration",output_workflow_all(config),"countPlot.pdf")
+        output_integration_all(stage = "plot", config = config)
