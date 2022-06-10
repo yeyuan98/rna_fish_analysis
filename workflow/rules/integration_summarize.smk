@@ -25,6 +25,7 @@ rule integration_summarize:
     output:
         samples=join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv"),
         plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv"),
+        plot_config=join("results", "{probe}", "integration", output_workflow_all(config), "plot.yaml"),
         visualization=directory(join("results", "{probe}", "integration", output_workflow_all(config), "visualization"))
     threads:
         config["resources"]["threads"]["integration"]

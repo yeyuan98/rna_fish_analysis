@@ -8,6 +8,7 @@ from helpers_and_sources import image_base
 from snake_helper import *
 from helpers_and_sources.mainflow_helpers import *
 from os.path import split
+import warnings
 import csv
 
 
@@ -41,9 +42,11 @@ def summarize(sample_paths, output_file_paths, config):
     # Write to csv with core csv module
     output_samples_path = output_file_paths['samples']
     output_plot_path = output_file_paths['plot']
-    samples_header = ["sample", "image", "mask_path", "fishdot_path", "physicalSizeX", "physicalSizeY", "physicalSizeZ"]
+    output_plot_config_path = output_file_paths['plot_config']
+    samples_header = ["sample", "image", "mask_path", "fishdot_path",
+                      "physicalSizeX", "physicalSizeY", "physicalSizeZ", "include", "num_cells"]
     samples_rows = []
-    plot_header = ["sample"]
+    plot_header = ["sample", "group", "batch"]
     plot_rows = []
     for sample_path in sample_paths:
         image_names = query_images_by_converted(sample_path, config)
@@ -67,9 +70,14 @@ def summarize(sample_paths, output_file_paths, config):
         writer = csv.writer(csvfile)
         writer.writerow(plot_header)
         writer.writerows(plot_rows)
+    with open(output_plot_config_path, 'w', newline='') as f:
+        f.write("xlab:\n  \nylab:\ngroup_prefix:\n  \n")
     print_current_time("Done summary. Aggregating images for visualization...")
     output_vis_path = output_file_paths['visualization']
     visualize(output_samples_path, output_vis_path)
+    warnings.warn("Aggregation completed. Please modify samples.csv, plot.csv and plot.yaml for each probe "
+                  "before proceeding to final plots.")
+    warnings.warn("Next steps: int_qc or int_plot")
 
 
 try:
