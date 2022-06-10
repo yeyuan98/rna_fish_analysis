@@ -59,11 +59,11 @@ def summarize(sample_paths, output_file_paths, config):
             pixel_sizes = image_base.load_pixelSizes(converted_path)
             samples_rows.append([sample_name, image_name,
                                  mask_path, fishdot_path, pixel_sizes[0], pixel_sizes[1], pixel_sizes[2]])
-    with open(output_samples_path, 'w') as csvfile:
+    with open(output_samples_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(samples_header)
         writer.writerows(samples_rows)
-    with open(output_plot_path, 'w') as csvfile:
+    with open(output_plot_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(plot_header)
         writer.writerows(plot_rows)
