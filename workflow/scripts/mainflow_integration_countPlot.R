@@ -24,10 +24,10 @@ if (T){
       xlab          xlab()            'group'
       ylab          ylab()            'counts/cell'
       base_fs       theme(base_size)  24
-      group_prefix  NA                NULL
+      group_ordered NA                NA
       ymin          scale_y           NA
       ymax          scale_y           NA
-    group_prefix is used for creating ordered x-axi labels. Your group in plot.csv must be numerical.
+    group_ordered should be a YAML sequence (dash lines) representing plotting order (left->right).
   "
 }
 
@@ -58,20 +58,16 @@ tryCatch({
   plot.xlab <- plot.config$xlab
   plot.ylab <- plot.config$ylab  # If any of these are not given, NULL will be the value.
   plot.basefs <- plot.config$base_fs
-  group.prefix <- plot.config$group_prefix
+  group.ordered <- plot.config$group_ordered
   plot.ymin <- plot.config$ymin
   plot.ymax <- plot.config$ymax
-}, error = function(e) {message(paste("To further configure your plots:", instruction.plot.yaml, sep = "\n"))})
+}, error = function(e) {stop("Please use plot.yaml to customize plotting. See documentation.")})
 
 # Check completeness of samples data (all columns present?)
-tryCatch({
-  verify.samples(samples)
-}, error = function(e) stop(instruction.samples))
+verify.samples(samples)
 
 # Check completeness of plot data (all columns present?)
-tryCatch({
-  verify.plot.csv(plot)
-}, error = function(e) stop(instruction.plot.csv))
+verify.plot.csv(plot)
 
 # Process plot parameter defaults
 plot.xlab <- ifelse(is.null(plot.xlab), "Group", plot.xlab)
@@ -85,10 +81,11 @@ dots %>%
   inner_join(samples, by = c("sample", "image")) %>%
   group_by(group, image, sample) %>%
   summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") %>%
-  mutate(group = ordered(as.integer(group))) -> dots
+  mutate(group = ordered(group, levels = group.ordered)) -> dots
 
-# Special - prepend level prefix for x-axis
-attr(dots$group, "levels") <- paste0(group.prefix, attr(dots$group, "levels"))
+# Verify that groups are all defined by the YAML spec. Otherwise raise error.
+if (any(is.na(dots$group)))
+  stop("Please make sure that ALL groups are defined in plot.yaml.")
 
 dots %>%
   mutate(dots.per.cell = dot.count / num.cells) %>%
