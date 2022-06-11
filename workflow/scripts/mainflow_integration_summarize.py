@@ -71,7 +71,7 @@ def summarize(sample_paths, output_file_paths, config):
         writer.writerow(plot_header)
         writer.writerows(plot_rows)
     with open(output_plot_config_path, 'w', newline='') as f:
-        f.write("xlab:\n  \nylab:\ngroup_prefix:\n  \n")
+        f.write("# Refer to documentation for possible settings.\nxlab:\n  \nylab:\n  \ngroup_prefix:\n  \n")
     print_current_time("Done summary. Aggregating images for visualization...")
     output_vis_path = output_file_paths['visualization']
     visualize(output_samples_path, output_vis_path)
