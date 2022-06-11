@@ -77,7 +77,7 @@ def summarize(sample_paths, output_file_paths, config):
     visualize(output_samples_path, output_vis_path)
     warnings.warn("Aggregation completed. Please modify samples.csv, plot.csv and plot.yaml for each probe "
                   "before proceeding to final plots.")
-    warnings.warn("Next steps: int_qc or int_plot")
+    warnings.warn("Next steps: int_qc or int_plot. Check documentation for details.")
 
 
 try:
