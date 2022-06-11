@@ -3,6 +3,7 @@
 """
 
 import os
+from statistics import mean
 
 #  Constant template file paths and the AIRLOCALIZE external script path
 AIRLOCALIZE_template_ini_path = "workflow/scripts/helpers_and_sources/airlocalize_template.ini"
@@ -10,7 +11,8 @@ AIRLOCALIZE_template_m_path = "workflow/scripts/helpers_and_sources/airlocalize_
 AIRLOCALIZE_root = "resources/AIRLOCALIZE-main"
 
 
-def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
+def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
+                    physical_x, physical_y, physical_z):
     """
         Generates MATLAB code for AIRLOCALIZE run of a list of input tifs.
 
@@ -18,10 +20,21 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
     :param config: smk config
     :param input_tifs: list of tif
     :param output_mpath: string to a .m file, configs of AIRLOCALIZE will be saved to the same folder
+    :param physical_x: list of string for numerical pixel -> physical sizes conversion in X direction
+    :param physical_y: list of string for numerical pixel -> physical sizes conversion in Y direction
+    :param physical_z: list of string for numerical pixel -> physical sizes conversion in Z direction
     :return: none
     """
     output_base = os.path.split(output_mpath)[0]
     ini_paths = []
+
+    # Get pixel physical size in unit of nanometer. This assumes micron unit of the image's physicalSizes.
+    physical_x = [float(x) * 1000 for x in physical_x]
+    physical_y = [float(x) * 1000 for x in physical_y]
+    physical_z = [float(x) * 1000 for x in physical_z]
+    psf_xy = float(config["fishdot"]["psf_xy"])
+    psf_z = float(config["fishdot"]["psf_z"])
+
     for i in range(len(input_tifs)):
         # Generates ini file for each input tif
         tif_name = os.path.split(input_tifs[i])[1]
@@ -32,9 +45,9 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path):
         # Replace the predefined values
         t = t.replace("{INPUT_SINGLE_FILE}", input_tifs[i])
         t = t.replace("{OUTPUT_DIRECTORY}", output_dir_path)
-        t = t.replace("{PSF_XY}", config["fishdot"]["psf_xy"])
-        t = t.replace("{PSF_Z}", config["fishdot"]["psf_z"])
-        t = t.replace("{THRESHOLD}", config["fishdot"]["threshold"])
+        t = t.replace("{PSF_XY}", str(round(psf_xy / mean([physical_x[i], physical_y[i]]), ndigits=2)))
+        t = t.replace("{PSF_Z}", str(round(psf_z / physical_z[i], ndigits=2)))
+        t = t.replace("{THRESHOLD}", str(config["fishdot"]["threshold"]))
         f = open(ini_paths[i], "w")  # write template
         f.write(t)
         f.close()

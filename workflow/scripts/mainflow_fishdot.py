@@ -9,6 +9,7 @@ from helpers_and_sources.mainflow_helpers import *
 
 # fishdot
 from helpers_and_sources import generators
+from tifffile import TiffFile  # Used for metadata access only
 
 
 def fishdot(inputs, output_dir, wildcards, config):
@@ -25,6 +26,13 @@ def fishdot(inputs, output_dir, wildcards, config):
     """
     #  Note - AIRLOCALIZE by default output file names to be the same as inputs, but extension swapped to par4 and loc4.
     os.mkdir(output_dir)
+
+    #  Release v1.2.0-alpha improvement - allows using physical sizes for PSF parameters of AIRLOCALIZE.
+    input_images = [TiffFile(p) for p in inputs]
+    input_physical_x = [float(image.shaped_metadata[0]["PhysicalSizeX"]) for image in input_images]
+    input_physical_y = [float(image.shaped_metadata[0]["PhysicalSizeY"]) for image in input_images]
+    input_physical_z = [float(image.shaped_metadata[0]["PhysicalSizeZ"]) for image in input_images]
+
     #  First, generate scripts
     params = "+".join([wildcards.probe, wildcards.sample, wildcards.params])
     params = wildcards.light_train + "++" + params
@@ -34,7 +42,9 @@ def fishdot(inputs, output_dir, wildcards, config):
     inputs_abspath = [os.path.abspath(inp) for inp in inputs]  # get absolute path
     output_dir_abspath = os.path.abspath(output_dir)
     print_current_time(f"Generating MATLAB scripts for {params}")
-    generators.AIRLOCALIZE_gen(config, inputs_abspath, output_mpath, output_dir_abspath)
+    generators.AIRLOCALIZE_gen(config, inputs_abspath, output_mpath, output_dir_abspath,
+                               physical_x=input_physical_x, physical_y=input_physical_y, physical_z=input_physical_z)
+
     #  Next, call MATLAB for execution
     print_current_time(f"Running MATLAB for {params}")
     matlab_run_string = f"run('{output_mpath}'); exit;"

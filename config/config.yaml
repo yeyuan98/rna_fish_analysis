@@ -24,13 +24,14 @@ light_trains:
 # Workflow-specific configurations
 segmentation:
   model: "full_cell" # what model to use
-  device: "cpu" # either cuda or cpu
+  device: "cpu" # where to run the model, either cuda or cpu. GPU is likely to be 10X faster if not more.
 fishdot:
-  psf_xy: "1.1" # PSF in xy direction, as defined by AIRLOCALIZE
-  psf_z: "3" # PSF in z direction, as defined by AIRLOCALIZE
-  threshold: "30" # threshold setting, global, as defined by AIRLOCALIZE
+  psf_xy: 123.6 # PSF in xy direction, in nanometer unit
+  psf_z: 360.5 # PSF in z direction, in nanometer unit
+  threshold: 30 # threshold setting, global, in arbitrary unit as defined by AIRLOCALIZE
 
 # Resource allocation defaults
+#   These defaults are quite generous, typically allocating more than necessary.
 resources:
   # different resources allocated to the rules
   threads:
@@ -57,6 +58,17 @@ resources:
 segmentation_models:
   # sets suitable internal method parameters given the segmentation model. Only change if new models are trained.
   full_cell:
+    # This model is suitable for recognizing lLNv neurons with clk>mCD8GFP marker signal in whole-mount D.mel brains.
+    MIP: "onesided"
+    z_projection_physical: 0.6
+    encoder: "timm-efficientnet-b0"
+    weights: "imagenet"
+    augmentation_function: "augmentations_enhanceThenResize"
+    augmentation_function_params: {}  # if no parameter needed, put {} here
+    fill: true  # should we perform filling for the output prediction mask
+    target_pixels: 320
+  nucleus_aggressive:
+    # This model is suitable for estimating nucleus of lLNv neurons with clk>mCD8GFP in whole-mount D.mel brains.
     MIP: "onesided"
     z_projection_physical: 0.6
     encoder: "timm-efficientnet-b0"
