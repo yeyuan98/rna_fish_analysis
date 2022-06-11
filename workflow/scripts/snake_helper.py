@@ -28,7 +28,7 @@ def output_workflow(workflow, config):
         params = "bfconvert"
         result = join("convert", params)
     elif workflow == "fishdot":
-        params = "+".join(config["fishdot"].values())
+        params = "+".join([str(v) for v in config["fishdot"].values()])  # Fishdot params can be numerical.
         params = config["pipeline_light_train"]["fishdot"] + "++" + params
         result = join("fishdot", params)
     elif workflow == "segmentation":
@@ -95,3 +95,26 @@ def input_sample_images(wildcards, config):
     images = [f for f in images if not f.startswith(".")]
     return [join(pathbase, image) for image in images]
 
+
+def output_integration_all(stage, config):
+    """
+        Generate integration workflow file paths.
+    :param stage: the integration stage, "summarize", "qc" or "plot"
+    :param config: snakemake config
+    """
+    probes = config['probes']
+    if stage == "summarize":
+        samples = [join("results", probe, "integration", output_workflow_all(config), "samples.csv")
+                   for probe in probes]
+        dots = [join("results", probe, "integration", output_workflow_all(config), "dots.csv")
+                   for probe in probes]
+        results = samples + dots
+    elif stage == "qc":
+        #  TODO: QC Plots
+        raise NotImplementedError("")
+    elif stage == "plot":
+        results = [join("results",probe,"integration",output_workflow_all(config),"countPlot.pdf")
+                   for probe in probes]
+    else:
+        raise NotImplementedError("Unsupported integration stage")
+    return results

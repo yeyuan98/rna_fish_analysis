@@ -28,7 +28,7 @@ def output_workflow(workflow, config):
         params = "bfconvert"
         result = join("convert", params)
     elif workflow == "fishdot":
-        params = "+".join(config["fishdot"].values())
+        params = "+".join([str(v) for v in config["fishdot"].values()])  # Fishdot params can be numerical.
         params = config["pipeline_light_train"]["fishdot"] + "++" + params
         result = join("fishdot", params)
     elif workflow == "segmentation":
