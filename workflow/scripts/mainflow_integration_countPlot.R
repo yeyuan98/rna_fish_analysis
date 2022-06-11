@@ -45,10 +45,6 @@ tryCatch({
   samples <- read_csv(snakemake@input[['samples']], show_col_types = F)
   plot <- read_csv(snakemake@input[['plot']], show_col_types = F)
   dots <- read_csv(snakemake@input[['dots']], show_col_types = F)
-
-  # Special - group parameter must be integer for plotting x-axis, and we check this
-  tryCatch(plot$group <- as.integer(plot$group),
-          warning = function(e) stop("Group must be integer for plotting"))
 }, error = function(e) stop("Could not read samples and/or plot and/or dots integration data."))
 
 # Read in optional plot.yaml and throw a message if not present
