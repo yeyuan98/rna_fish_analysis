@@ -30,3 +30,9 @@ rule int_plot:
     # Requires modification to the integration output
     input:
         output_integration_all(stage = "plot", config = config)
+
+rule int_qc:
+    # Step II integration - create the QC plots
+    # Requires modification to the integration output
+    input:
+        output_integration_all(stage="qc",config=config)
