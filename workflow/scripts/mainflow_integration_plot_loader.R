@@ -69,7 +69,7 @@ read.plot.config <- function(snakemake){
     plot.basefs = plot.basefs,
     group.ordered = plot.config$group_ordered,
     plot.ymin = plot.config$ymin,
-    plot.ymax = plot.config$ymax,
+    plot.ymax = plot.config$ymax
   )
 }
 
