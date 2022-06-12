@@ -76,7 +76,7 @@ theme_set(theme_classic(base_size = plot.basefs))
 dots %>%
   inner_join(plot, by = "sample") %>%
   inner_join(samples, by = c("sample", "image")) %>%
-  group_by(group, image, sample) %>%
+  group_by(group, image, sample, batch) %>%
   summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") %>%
   mutate(group = ordered(group, levels = group.ordered)) -> dots
 
