@@ -93,7 +93,7 @@ dots %>%
   ylab(plot.ylab) -> plot.countPlot
 
 # Check plotting type and add batch facet if QC plot is requested.
-plot.type <- snakemaake@wildcards[["plot_type"]]
+plot.type <- snakemake@wildcards[["plot_type"]]
 switch(plot.type,
        merged=message("Generating merged count plot"),
        batch.qc={
