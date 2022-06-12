@@ -3,6 +3,7 @@
 """
 
 import re
+import numpy as np
 from xml.etree import ElementTree as ET
 import tifffile as tf
 
@@ -114,3 +115,13 @@ def load_pixelSizes(path):
         return [pixels["PhysicalSizeX"], pixels["PhysicalSizeY"], pixels["PhysicalSizeZ"]]
     except:
         raise ValueError("Target OME-TIFF file does not contain all PhysicalSizesXYZ info.")
+
+
+def load_nonzero_count(path):
+    """
+        Reads a single channel ZYX TIFF file and return count of non-zero pixels.
+    :param path: path to the zyx TIFF image
+    :return: int of non-zero pixel count
+    """
+    f = load_image(path)
+    return np.sum(f.asarray() != 0)
