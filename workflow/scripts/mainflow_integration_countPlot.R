@@ -34,55 +34,10 @@ if (T){
 
 library(tidyverse)
 library(yaml)
-source("workflow/scripts/mainflow_integration_countPlot_helper.R")
 
-# Determine context
-if (!exists("snakemake")){
-  stop("Workflow script is only callable via snakemake.")
-}
 
-# Read in samples and plot integration data
-tryCatch({
-  samples <- read_csv(snakemake@input[['samples']], show_col_types = F)
-  plot <- read_csv(snakemake@input[['plot']], show_col_types = F)
-  dots <- read_csv(snakemake@input[['dots']], show_col_types = F)
-}, error = function(e) stop("Could not read samples and/or plot and/or dots integration data."))
+source("mainflow_integration_plot_loader.R")
 
-# Read in optional plot.yaml and throw a message if not present
-tryCatch({
-  yaml.path <- file.path(dirname(snakemake@input[['samples']]), "plot.yaml")
-  plot.config <- yaml.load_file(yaml.path)
-  plot.xlab <- plot.config$xlab
-  plot.ylab <- plot.config$ylab  # If any of these are not given, NULL will be the value.
-  plot.basefs <- plot.config$base_fs
-  group.ordered <- plot.config$group_ordered
-  plot.ymin <- plot.config$ymin
-  plot.ymax <- plot.config$ymax
-}, error = function(e) {stop("Please use plot.yaml to customize plotting. See documentation.")})
-
-# Check completeness of samples data (all columns present?)
-verify.samples(samples)
-
-# Check completeness of plot data (all columns present?)
-verify.plot.csv(plot)
-
-# Process plot parameter defaults
-plot.xlab <- ifelse(is.null(plot.xlab), "Group", plot.xlab)
-plot.ylab <- ifelse(is.null(plot.ylab), "dots/cell", plot.ylab)
-plot.basefs <- ifelse(is.null(plot.basefs), 24, as.integer(plot.basefs))
-
-# Get the plot
-theme_set(theme_classic(base_size = plot.basefs))
-dots %>%
-  inner_join(plot, by = "sample") %>%
-  inner_join(samples, by = c("sample", "image")) %>%
-  group_by(group, image, sample, batch) %>%
-  summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") %>%
-  mutate(group = ordered(group, levels = group.ordered)) -> dots
-
-# Verify that groups are all defined by the YAML spec. Otherwise raise error.
-if (any(is.na(dots$group)))
-  stop("Please make sure that ALL groups are defined in plot.yaml.")
 
 dots %>%
   mutate(dots.per.cell = dot.count / num.cells) %>%
