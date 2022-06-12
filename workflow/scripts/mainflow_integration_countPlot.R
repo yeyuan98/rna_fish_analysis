@@ -2,6 +2,7 @@ if (F){
   "
     This script implements count ~ group plotting integration.
     It requires Stage I integration outputs dots.csv, samples.csv.
+    Two possible output files: merged.pdf and batch.qc.pdf
   "
 }
 if (T){
@@ -90,6 +91,16 @@ dots %>%
   scale_y_continuous(expand = c(0,0), limits = c(plot.ymin, plot.ymax))+
   xlab(plot.xlab)+
   ylab(plot.ylab) -> plot.countPlot
+
+# Check plotting type and add batch facet if QC plot is requested.
+plot.type <- snakemaake@wildcards[["plot_type"]]
+switch(plot.type,
+       merged=message("Generating merged count plot"),
+       batch.qc={
+         plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
+         message("Generating batch faceted plot")
+       },
+       stop("Unsupported plotting type"))
 
 out.path <- snakemake@output[["plot"]]
 ggsave(filename = basename(out.path),
