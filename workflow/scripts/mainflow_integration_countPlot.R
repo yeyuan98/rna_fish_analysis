@@ -88,7 +88,7 @@ dots %>%
   mutate(dots.per.cell = dot.count / num.cells) %>%
   ggplot(aes(x = group, y = dots.per.cell))+
   geom_point()+
-  scale_y_continuous(expand = c(0,0), limits = c(plot.ymin, plot.ymax))+
+  scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
   xlab(plot.xlab)+
   ylab(plot.ylab) -> plot.countPlot
 
