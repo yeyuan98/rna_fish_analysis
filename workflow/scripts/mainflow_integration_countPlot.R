@@ -36,7 +36,7 @@ library(tidyverse)
 library(yaml)
 
 
-source("mainflow_integration_plot_loader.R")
+source("workflow/scripts/mainflow_integration_plot_loader.R")
 
 
 dots %>%
