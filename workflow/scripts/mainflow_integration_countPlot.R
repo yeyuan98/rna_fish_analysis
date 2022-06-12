@@ -5,35 +5,9 @@ if (F){
     Two possible output files: merged.pdf and batch.qc.pdf
   "
 }
-if (T){
-  instruction.samples <- "
-    The user is required to mofidy the samples.csv file to include the following image-specific information:
-      column    values      description
-      include   T or F      should R include this image for plotting
-      num_cells integer     how many cells are there in this image
-  "
-  instruction.plot.csv <- "
-    The user is also required to modify the plot.csv file to include the following sample-specific information:
-      column    values      description
-      group     character   what x-label should the sample take (will merge samples with the same group)
-      batch     character   what batch is the sample (allows batch splitting of samples from the same group, QC only)
-  "
-  instruction.plot.yaml <- "
-    If plot.yaml exists in the same folder as samples.csv, the script will use it for plot customization:
-      --- only put in top level entries ---
-      entry         ggplot2_param     default
-      xlab          xlab()            'group'
-      ylab          ylab()            'counts/cell'
-      base_fs       theme(base_size)  24
-      group_ordered NA                NA
-      ymin          scale_y           NA
-      ymax          scale_y           NA
-    group_ordered should be a YAML sequence (dash lines) representing plotting order (left->right).
-  "
-}
+
 
 library(tidyverse)
-library(yaml)
 
 
 source("workflow/scripts/mainflow_integration_plot_loader.R")
@@ -47,6 +21,7 @@ dots %>%
   xlab(plot.xlab)+
   ylab(plot.ylab) -> plot.countPlot
 
+
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]
 switch(plot.type,
@@ -56,6 +31,7 @@ switch(plot.type,
          message("Generating batch faceted plot")
        },
        stop("Unsupported plotting type"))
+
 
 out.path <- snakemake@output[["plot"]]
 ggsave(filename = basename(out.path),

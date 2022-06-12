@@ -32,6 +32,28 @@ def get_pixelsettings(tiff):
     return ome_pixel.attrib
 
 
+def get_z_direction(tiff):
+    """
+        Get Z-direction acquisition sequence of the image.
+    :param tiff: TiffFile object of the image
+    :return: either '+' or '-'.
+        '+' means that the stack is taken such that absolute Z position is increasing with Z index
+    """
+    # Input: TiffFile
+    try:
+        meta_root = ET.fromstring(tiff.ome_metadata)
+        ome_schema = get_namespace(meta_root)
+        ome_pixel = meta_root.find(f"{ome_schema}Image").find(f"{ome_schema}Pixels")
+    except:
+        raise ValueError("Tiff does not have OME metadata.")
+    # Get Z position values for the first and second planes, from OME-TIFF Plane metadata
+    z_01 = [float(ome_pixel.find(f"{ome_schema}Plane[@TheZ='{i}']").attrib['PositionZ']) for i in range(2)]
+    if z_01[0] < z_01[1]:
+        return '+'
+    else:
+        return '-'
+
+
 def get_channels(tiff, what="Name"):
     """
     Get channel information from the TiffFile object
@@ -125,3 +147,13 @@ def load_nonzero_count(path):
     """
     f = load_image(path)
     return np.sum(f.asarray() != 0)
+
+
+def load_z_direction(path):
+    """
+        Simple wrapper of get_z_direction to see whether larger Z-stack index means more positive stage Z location.
+    :param path: path to the OME-TIFF image
+    :return: '+' or '-', see get_z_direction
+    """
+    f = load_image(path)
+    return get_z_direction(f)

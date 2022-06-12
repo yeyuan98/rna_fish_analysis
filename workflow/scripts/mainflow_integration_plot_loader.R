@@ -108,3 +108,32 @@ dots %>%
 # Verify that groups are all defined by the YAML spec. Otherwise raise error.
 if (any(is.na(dots$group)))
   stop("Please make sure that ALL groups are defined in plot.yaml.")
+
+
+# TODO: Migrate the following doc
+if (T){
+  instruction.samples <- "
+    The user is required to mofidy the samples.csv file to include the following image-specific information:
+      column    values      description
+      include   T or F      should R include this image for plotting
+      num_cells integer     how many cells are there in this image
+  "
+  instruction.plot.csv <- "
+    The user is also required to modify the plot.csv file to include the following sample-specific information:
+      column    values      description
+      group     character   what x-label should the sample take (will merge samples with the same group)
+      batch     character   what batch is the sample (allows batch splitting of samples from the same group, QC only)
+  "
+  instruction.plot.yaml <- "
+    If plot.yaml exists in the same folder as samples.csv, the script will use it for plot customization:
+      --- only put in top level entries ---
+      entry         ggplot2_param     default
+      xlab          xlab()            'group'
+      ylab          ylab()            'counts/cell'
+      base_fs       theme(base_size)  24
+      group_ordered NA                NA
+      ymin          scale_y           NA
+      ymax          scale_y           NA
+    group_ordered should be a YAML sequence (dash lines) representing plotting order (left->right).
+  "
+}

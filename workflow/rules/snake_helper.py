@@ -112,12 +112,24 @@ def output_integration_all(stage, config):
     elif stage == "qc":
         #  TODO: QC Plots
 
-        #   Batch faceted plots, carried out by the countPlot still
-        results = [join("results", probe, "integration", output_workflow_all(config), "countPlots", "batch.qc.pdf")
-                   for probe in probes]
+        #   Batch faceted count plot, carried out by the countPlot rule
+        batch = [join("results", probe, "integration", output_workflow_all(config),
+                 "countPlots", "batch.qc.pdf") for probe in probes]
+        #  Working distance plot
+        #  todo: y-axis can be dot count, etc.?
+        #   Segmentation volume plot
+        seg_volume = [join("results", probe, "integration", output_workflow_all(config),
+                      "qcPlots", "volume.pdf") for probe in probes]
+        #   Intensity plot
+        intensity = [join("results", probe, "integration", output_workflow_all(config),
+                     "qcPlots", "intensity.pdf") for probe in probes]
+        #   Residual plot
+        residual = [join("results", probe, "integration", output_workflow_all(config),
+                    "qcPlots", "residual.pdf") for probe in probes]
+        results = batch + seg_volume + intensity + residual
     elif stage == "plot":
-        results = [join("results", probe, "integration", output_workflow_all(config), "countPlots", "merged.pdf")
-                   for probe in probes]
+        results = [join("results", probe, "integration", output_workflow_all(config),
+                   "countPlots", "merged.pdf") for probe in probes]
     else:
         raise NotImplementedError("Unsupported integration stage")
     return results
