@@ -45,7 +45,7 @@ def summarize(sample_paths, output_file_paths, config):
     output_plot_config_path = output_file_paths['plot_config']
     samples_header = ["sample", "image", "mask_path", "fishdot_path",
                       "physicalSizeX", "physicalSizeY", "physicalSizeZ",
-                      "mask_pixel_volume", "z_direction", "include", "num_cells"]
+                      "mask_pixel_volume", "z_direction", "z_pixel_num", "include", "num_cells"]
     samples_rows = []
     plot_header = ["sample", "group", "batch"]
     plot_rows = []
@@ -61,10 +61,11 @@ def summarize(sample_paths, output_file_paths, config):
             converted_path = join(sample_path, output_workflow("convert", config), image_name + ".ome.tif")
             print_current_time("      converted image path: " + converted_path)
             mask_pixel_volume = image_base.load_nonzero_count(mask_path)
-            z_direction = image_base.load_z_direction(converted_path)
+            (z_pixel_count, z_direction) = image_base.load_z_direction(converted_path)
             pixel_sizes = image_base.load_pixelSizes(converted_path)
             samples_rows.append([sample_name, image_name, mask_path, fishdot_path,
-                                 pixel_sizes[0], pixel_sizes[1], pixel_sizes[2], mask_pixel_volume, z_direction])
+                                 pixel_sizes[0], pixel_sizes[1], pixel_sizes[2],
+                                 mask_pixel_volume, z_direction, z_pixel_count])
     with open(output_samples_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(samples_header)

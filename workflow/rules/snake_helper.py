@@ -126,7 +126,10 @@ def output_integration_all(stage, config):
         #   Residual plot
         residual = [join("results", probe, "integration", output_workflow_all(config),
                     "qcPlots", "residual.pdf") for probe in probes]
-        results = batch + seg_volume + intensity + residual
+        #   Working distance plot
+        working_dist = [join("results", probe, "integration", output_workflow_all(config),
+                        "qcPlots", "workingDist.pdf") for probe in probes]
+        results = batch + seg_volume + intensity + residual + working_dist
     elif stage == "plot":
         results = [join("results", probe, "integration", output_workflow_all(config),
                    "countPlots", "merged.pdf") for probe in probes]

@@ -152,8 +152,10 @@ def load_nonzero_count(path):
 def load_z_direction(path):
     """
         Simple wrapper of get_z_direction to see whether larger Z-stack index means more positive stage Z location.
-    :param path: path to the OME-TIFF image
-    :return: '+' or '-', see get_z_direction
+    :param path: path to the 4D (zcyx) OME-TIFF image
+    :return: [z_pixel_count, direction] list
+        direction: '+' or '-', see get_z_direction
+        z_pixel_count: number of pixels in Z direction
     """
     f = load_image(path)
-    return get_z_direction(f)
+    return [f.asarray().shape[0], get_z_direction(f)]
