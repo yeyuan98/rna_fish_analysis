@@ -102,6 +102,7 @@ theme_set(theme_classic(base_size = plot.basefs))
 
 dots %>%
   inner_join(plot, by = "sample") %>%
+  select(-starts_with("physicalSize")) %>%
   inner_join(samples, by = c("sample", "image")) %>%
   ungroup() %>%
   mutate(group = ordered(group, levels = group.ordered)) -> dots.full
