@@ -36,7 +36,7 @@ switch(plot.type,
          #  Intensity ~ sample
          dots %>%
            ggplot(aes(x=sample, y=integratedIntensity))+
-           geom_point()+
+           geom_point(position="jitter")+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Integrated intensity per dot (arbitrary unit)")
        },
@@ -44,7 +44,7 @@ switch(plot.type,
          #  Residual ~ sample
          dots %>%
            ggplot(aes(x=sample, y=residuals))+
-           geom_point()+
+           geom_point(position="jitter")+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Gaussian fit residuals per dot (arbitrary unit)")
        },
@@ -56,6 +56,7 @@ switch(plot.type,
                     ifelse(z_direction == "+", (z_in_pix -1), (z_pixel_num - z_in_pix)) * physicalSizeZ) %>%
            ggplot(aes(x=z.in.physical, y=integratedIntensity))+
            geom_point()+
+           geom_smooth()+
            scale_y_log10(expand = c(0.05, 0.05))+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
