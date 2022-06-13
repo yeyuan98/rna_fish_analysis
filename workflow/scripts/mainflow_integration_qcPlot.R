@@ -28,7 +28,7 @@ switch(plot.type,
            mutate(cell.volume = mask_pixel_volume * pixel3.volume / num_cells) %>%
            mutate(cell.equi.diameter = (cell.volume/pi*6)^(1/3)) %>%
            ggplot(aes(x=sample, y=cell.equi.diameter))+
-           geom_point()+
+           geom_point(position="jitter")+
            scale_y_continuous(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
            custom.theme

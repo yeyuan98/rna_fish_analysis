@@ -62,7 +62,7 @@ read.plot.config <- function(snakemake){
   plot.xlab <- ifelse(is.null(plot.xlab), "Group", plot.xlab)
   plot.ylab <- ifelse(is.null(plot.ylab), "dots/cell", plot.ylab)
   plot.text.x.size <- ifelse(is.null(plot.text.x.size), 18, as.integer(plot.text.x.size))
-  plot.text.x.angle <- ifelse(is.null(plot.text.x.aangle), 0, as.integer(plot.text.x.angle))
+  plot.text.x.angle <- ifelse(is.null(plot.text.x.angle), 0, as.integer(plot.text.x.angle))
   plot.basefs <- ifelse(is.null(plot.basefs), 24, as.integer(plot.basefs))
 
   # Returns parsed config entries
