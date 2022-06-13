@@ -79,7 +79,9 @@ read.plot.config <- function(snakemake){
     plot.ymin = plot.config$ymin,
     plot.ymax = plot.config$ymax,
     plot.text.x.size = plot.text.x.size,
-    plot.text.x.angle = plot.text.x.angle
+    plot.text.x.angle = plot.text.x.angle,
+    plot.width.in = plot.width.in,
+    plot.height.in = plot.height.in
   )
 }
 
