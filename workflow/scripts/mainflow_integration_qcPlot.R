@@ -31,7 +31,7 @@ switch(plot.type,
              summarize(cell.equi.diameter = mean(cell.equi.diameter), .groups = "drop") %>%
              ggplot(aes(x=sample, y=cell.equi.diameter))+
              geom_point(alpha=0.3)+
-             geom_jitter()+
+             geom_jitter(alpha=0.3)+
              scale_y_continuous(expand = c(0.05,0.05))+
              xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
              custom.theme
@@ -41,7 +41,7 @@ switch(plot.type,
          dots %>%
            ggplot(aes(x=sample, y=integratedIntensity))+
            geom_point(alpha=0.3)+
-           geom_jitter()+
+           geom_jitter(alpha=0.3)+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Integrated intensity per dot (a.u.)")+
            custom.theme
@@ -51,7 +51,7 @@ switch(plot.type,
          dots %>%
            ggplot(aes(x=sample, y=residuals))+
            geom_point(alpha=0.3)+
-           geom_jitter()+
+           geom_jitter(alpha=0.3)+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Gaussian fit residuals per dot (a.u.)")+
            custom.theme
