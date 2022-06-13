@@ -28,7 +28,8 @@ switch(plot.type,
            mutate(cell.volume = mask_pixel_volume * pixel3.volume / num_cells) %>%
            mutate(cell.equi.diameter = (cell.volume/pi*6)^(1/3)) %>%
            ggplot(aes(x=sample, y=cell.equi.diameter))+
-           geom_point(position="jitter")+
+           geom_point(alphaa=0.3)+
+           geom_jitter()+
            scale_y_continuous(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
            custom.theme
@@ -37,7 +38,8 @@ switch(plot.type,
          #  Intensity ~ sample
          dots %>%
            ggplot(aes(x=sample, y=integratedIntensity))+
-           geom_point(position="jitter")+
+           geom_point(alpha=0.3)+
+           geom_jitter()+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Integrated intensity per dot (a.u.)")+
            custom.theme
@@ -46,7 +48,8 @@ switch(plot.type,
          #  Residual ~ sample
          dots %>%
            ggplot(aes(x=sample, y=residuals))+
-           geom_point(position="jitter")+
+           geom_point(alpha=0.3)+
+           geom_jitter()+
            scale_y_log10(expand = c(0.05,0.05))+
            xlab("Sample")+ylab("Gaussian fit residuals per dot (a.u.)")+
            custom.theme
