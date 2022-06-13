@@ -26,16 +26,15 @@ switch(plot.type,
          dots %>%
            mutate(cell.volume = mask_pixel_volume * pixel3.volume / num_cells) %>%
            mutate(cell.equi.diameter = (cell.volume/pi*6)^(1/3)) -> dots
-
-           print(dots %>% select(cell.volume, cell.equi.diameter))
-
            dots %>%
-           ggplot(aes(x=sample, y=cell.equi.diameter))+
-           geom_point(alphaa=0.3)+
-           geom_jitter()+
-           scale_y_continuous(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
-           custom.theme
+             group_by(sample, image) %>%
+             summarize(cell.equi.diameter = mean(cell.equi.diameter), .groups = "drop") %>%
+             ggplot(aes(x=sample, y=cell.equi.diameter))+
+             geom_point(alpha=0.3)+
+             geom_jitter()+
+             scale_y_continuous(expand = c(0.05,0.05))+
+             xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
+             custom.theme
        },
        intensity={
          #  Intensity ~ sample
