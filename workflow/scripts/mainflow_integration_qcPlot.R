@@ -16,7 +16,6 @@ library(tidyverse)
 
 source("workflow/scripts/mainflow_integration_plot_loader.R")
 dots <- dots.full  # QC Plot needs raw dots.csv integrated data
-print(dots)
 
 
 # Check plotting type and add batch facet if QC plot is requested.
@@ -26,7 +25,11 @@ switch(plot.type,
          pixel3.volume <- with(dots, physicalSizeX * physicalSizeY * physicalSizeZ)
          dots %>%
            mutate(cell.volume = mask_pixel_volume * pixel3.volume / num_cells) %>%
-           mutate(cell.equi.diameter = (cell.volume/pi*6)^(1/3)) %>%
+           mutate(cell.equi.diameter = (cell.volume/pi*6)^(1/3)) -> dots
+
+           print(dots %>% select(cell.volume, cell.equi.diameter))
+
+           dots %>%
            ggplot(aes(x=sample, y=cell.equi.diameter))+
            geom_point(alphaa=0.3)+
            geom_jitter()+
