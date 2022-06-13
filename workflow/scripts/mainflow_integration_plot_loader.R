@@ -57,8 +57,12 @@ read.plot.config <- function(snakemake){
   plot.xlab <- plot.config$xlab
   plot.ylab <- plot.config$ylab
   plot.basefs <- plot.config$base_fs
+  plot.text.x.size <- plot.config$xlab_size
+  plot.text.x.angle <- plot.config$xlab_angle
   plot.xlab <- ifelse(is.null(plot.xlab), "Group", plot.xlab)
   plot.ylab <- ifelse(is.null(plot.ylab), "dots/cell", plot.ylab)
+  plot.text.x.size <- ifelse(is.null(plot.text.x.size), 18, as.integer(plot.text.x.size))
+  plot.text.x.angle <- ifelse(is.null(plot.text.x.aangle), 0, as.integer(plot.text.x.angle))
   plot.basefs <- ifelse(is.null(plot.basefs), 24, as.integer(plot.basefs))
 
   # Returns parsed config entries
@@ -69,7 +73,9 @@ read.plot.config <- function(snakemake){
     plot.basefs = plot.basefs,
     group.ordered = plot.config$group_ordered,
     plot.ymin = plot.config$ymin,
-    plot.ymax = plot.config$ymax
+    plot.ymax = plot.config$ymax,
+    plot.text.x.size = plot.text.x.size,
+    plot.text.x.angle = plot.text.x.angle
   )
 }
 
@@ -97,7 +103,9 @@ verify.plot.csv(plot)
 
 
 # Get the plot (WITH dot.count, which is limited for use in countPlot)
+# Use custom.theme to further provide ggplot2 theme settings.
 theme_set(theme_classic(base_size = plot.basefs))
+custom.theme <- theme(axis.text.x = element_text(size = plot.text.x.size, angle = plot.text.x.angle))
 
 
 dots %>%

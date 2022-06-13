@@ -19,7 +19,8 @@ dots %>%
   geom_point()+
   scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
   xlab(plot.xlab)+
-  ylab(plot.ylab) -> plot.countPlot
+  ylab(plot.ylab)+
+  custom.theme -> plot.countPlot
 
 
 # Check plotting type and add batch facet if QC plot is requested.

@@ -30,7 +30,8 @@ switch(plot.type,
            ggplot(aes(x=sample, y=cell.equi.diameter))+
            geom_point()+
            scale_y_continuous(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Equivalent diameter per object (physical unit)")
+           xlab("Sample")+ylab("Object equivalent diameter (p.u.)")+  # p.u. = physical unit
+           custom.theme
        },
        intensity={
          #  Intensity ~ sample
@@ -38,7 +39,8 @@ switch(plot.type,
            ggplot(aes(x=sample, y=integratedIntensity))+
            geom_point(position="jitter")+
            scale_y_log10(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Integrated intensity per dot (arbitrary unit)")
+           xlab("Sample")+ylab("Integrated intensity per dot (a.u.)")+
+           custom.theme
        },
        residual={
          #  Residual ~ sample
@@ -46,7 +48,8 @@ switch(plot.type,
            ggplot(aes(x=sample, y=residuals))+
            geom_point(position="jitter")+
            scale_y_log10(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Gaussian fit residuals per dot (arbitrary unit)")
+           xlab("Sample")+ylab("Gaussian fit residuals per dot (a.u.)")+
+           custom.theme
        },
        workingDist={
          #  Intensity ~ Z, faceted by sample
@@ -60,7 +63,8 @@ switch(plot.type,
            scale_y_log10(expand = c(0.05, 0.05))+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
-           facet_wrap(vars(sample))
+           facet_wrap(vars(sample))+
+           custom.theme
        },
        stop("Unsupported QC plotting type"))
 
