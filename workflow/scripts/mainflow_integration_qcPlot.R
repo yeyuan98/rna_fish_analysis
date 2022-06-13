@@ -15,8 +15,9 @@ library(tidyverse)
 
 
 source("workflow/scripts/mainflow_integration_plot_loader.R")
-
+dots <- dots.full  # QC Plot needs raw dots.csv integrated data
 print(dots)
+
 
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]

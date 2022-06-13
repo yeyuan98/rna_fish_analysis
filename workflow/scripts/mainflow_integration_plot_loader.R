@@ -96,18 +96,25 @@ verify.samples(samples)
 verify.plot.csv(plot)
 
 
-# Get the plot
+# Get the plot (WITH dot.count, which is limited for use in countPlot)
 theme_set(theme_classic(base_size = plot.basefs))
+
+
 dots %>%
   inner_join(plot, by = "sample") %>%
   inner_join(samples, by = c("sample", "image")) %>%
-  group_by(group, image, sample, batch) %>%
-  summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") %>%
-  mutate(group = ordered(group, levels = group.ordered)) -> dots
+  ungroup() %>%
+  mutate(group = ordered(group, levels = group.ordered)) -> dots.full
+
 
 # Verify that groups are all defined by the YAML spec. Otherwise raise error.
-if (any(is.na(dots$group)))
+if (any(is.na(dots.full$group)))
   stop("Please make sure that ALL groups are defined in plot.yaml.")
+
+
+dots.full %>%
+  group_by(group, image, sample, batch) %>%
+  summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") -> dots
 
 
 # TODO: Migrate the following doc
