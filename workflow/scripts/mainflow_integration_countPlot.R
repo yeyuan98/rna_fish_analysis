@@ -37,4 +37,7 @@ switch(plot.type,
 out.path <- snakemake@output[["plot"]]
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
-       dpi = "retina")
+       dpi = "retina",
+       width = plot.width.in,
+       height = plot.height.in,
+       units = "in")
