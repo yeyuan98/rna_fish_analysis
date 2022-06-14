@@ -40,21 +40,24 @@ switch(plot.type,
        intensity={
          #  Intensity ~ sample
          dots %>%
-           ggplot(aes(x=sample, y=integratedIntensity))+
-           geom_point(alpha=0.3)+
-           geom_jitter(alpha=0.3)+
+           mutate(unique.label = paste(sample, image, sep = "\n")) %>%
+           ggplot(aes(x=integratedIntensity))+
            scale_y_log10(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Integrated intensity per dot (a.u.)")+
+           xlab("Intensity (a.u.)")+ylab("Count")+
+           facet_wrap(vars(unique.label))+
+           theme(strip.background = element_blank())+
            custom.theme
        },
        residual={
          #  Residual ~ sample
          dots %>%
-           ggplot(aes(x=sample, y=residuals))+
-           geom_point(alpha=0.3)+
-           geom_jitter(alpha=0.3)+
-           scale_y_log10(expand = c(0.05,0.05))+
-           xlab("Sample")+ylab("Gaussian fit residuals per dot (a.u.)")+
+           mutate(unique.label = paste(sample, image, sep = "\n")) %>%
+           ggplot(aes(x=residuals))+
+           geom_histogram()+
+           scale_y_continuous(expand = c(0.05,0.05))+
+           xlab("Residuals (a.u.)")+ylab("Count")+
+           facet_wrap(vars(unique.label))+
+           theme(strip.background = element_blank())+
            custom.theme
        },
        workingDist={
@@ -74,7 +77,7 @@ switch(plot.type,
                        aes(label = paste0("P-value = ", signif(..p.value.., digits = 3),
                                           "\n","Adj. Rsq = ", signif(..adj.r.squared.., digits = 3)),
                            colour = ifelse(..p.value.. < 0.001, "#FF00FF","#000000")),
-                       label.x = 1, label.y = 0.3, size = 6)+
+                       label.x = 1, label.y = 0.1, size = 6)+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
            facet_wrap(vars(unique.label))+
@@ -89,8 +92,8 @@ out.path <- snakemake@output[["plot"]]
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
        dpi = "retina",
-       width = ifelse(plot.type == "workingDist", 5, 1) * plot.width.in,
-       height = ifelse(plot.type == "workingDist", 5, 1) * plot.height.in,
+       width = ifelse(plot.type != "volume", 5, 1) * plot.width.in,
+       height = ifelse(plot.type != "volume", 5, 1) * plot.height.in,
        units = "in", limitsize = F)
 
 warnings()
