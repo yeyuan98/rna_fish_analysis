@@ -70,11 +70,11 @@ switch(plot.type,
            geom_point(alpha=0.3)+
            scale_y_log10(expand = c(0.05, 0.05))+
            geom_smooth(method="lm", formula= y~x, se=F)+
-           stat_fit_glance(method = 'lm', method.args = list(formula = y~x), geom = 'text',
+           stat_fit_glance(method = 'lm', method.args = list(formula = y~x), geom = 'text_npc',
                        aes(label = paste0("P-value = ", signif(..p.value.., digits = 3),
                                           "\n","Adj. Rsq = ", signif(..adj.r.squared.., digits = 3)),
                            colour = ifelse(..p.value.. < 0.001, "red","black")),
-                       label.x = 0.8, label.y = 0.8, size = 6)+
+                       label.x = 0.6, label.y = 0.3, size = 6)+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
            facet_wrap(vars(unique.label))+
