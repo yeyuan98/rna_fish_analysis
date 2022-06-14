@@ -75,7 +75,7 @@ switch(plot.type,
                        label.x.npc = 'right', label.y.npc = 0.35, size = 3)+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
-           facet_grid(vars(unique.label))+
+           facet_wrap(vars(unique.label))+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
