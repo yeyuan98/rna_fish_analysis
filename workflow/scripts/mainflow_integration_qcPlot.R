@@ -19,7 +19,7 @@ dots <- dots.full  # QC Plot needs raw dots.csv integrated data
 
 
 #  Helper function for the working distance QC plot
-workingdist.significance.filter <- function(dots.df, signif.threshold = 0.01){
+workingdist.significance.filter <- function(dots.df, signif.threshold = 0.001){
   #  Performs lm fit for each image and returns only images that hold significant slope fit.
   dots.df %>%
     group_by(sample, image) %>%
@@ -77,7 +77,7 @@ switch(plot.type,
            mutate(z.in.physical = # '+' direction increase with z_in_pix; otherwise decrease; both take the same range.
                     ifelse(z_direction == "+", (z_in_pix -1), (z_pixel_num - z_in_pix)) * physicalSizeZ) -> dots
          dots %>%
-           workingdist.significance.filter(signif.threshold = 0.01) %>%
+           workingdist.significance.filter(signif.threshold = 0.001) %>%
            ggplot(aes(x=z.in.physical, y=integratedIntensity, group=image, color=image))+
            geom_point(alpha=0.3, show.legend = T)+
            geom_smooth(method="lm", formula= y~x, se=T)+
