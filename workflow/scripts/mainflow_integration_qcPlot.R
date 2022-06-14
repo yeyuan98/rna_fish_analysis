@@ -86,8 +86,8 @@ out.path <- snakemake@output[["plot"]]
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
        dpi = "retina",
-       width = ifelse(plot.type == "workingDist", 10, 1) * plot.width.in,
-       height = ifelse(plot.type == "workingDist", 10, 1) * plot.height.in,
-       units = "in")
+       width = ifelse(plot.type == "workingDist", 5, 1) * plot.width.in,
+       height = ifelse(plot.type == "workingDist", 5, 1) * plot.height.in,
+       units = "in", limitsize = F)
 
 warnings()
