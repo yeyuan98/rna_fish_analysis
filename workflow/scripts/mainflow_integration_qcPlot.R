@@ -42,11 +42,11 @@ switch(plot.type,
          #  Intensity ~ sample
          dots %>%
            mutate(unique.label = paste(sample, image, sep = "\n")) %>%
-           ggplot(aes(x=integratedIntensity))+
+           ggplot(aes(x=log1p(integratedIntensity)))+
            geom_histogram(bins=30)+
-           scale_y_continuous(expand = c(0.05,0.05))+
-           scale_x_continuous(trans="log1p", expand=c(0,0))+
-           xlab("Intensity (a.u.)")+ylab("Count")+
+           scale_y_continuous(expand = c(0,0.01))+
+           scale_x_continuous(expand=c(0,0))+
+           xlab("log1p(Intensity) (a.u.)")+ylab("Count")+
            facet_wrap(vars(unique.label))+
            theme(strip.background = element_blank())+
            custom.theme
