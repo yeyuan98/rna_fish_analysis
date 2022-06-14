@@ -97,8 +97,8 @@ switch(plot.type,
          fit.means <- fit$parameters$mean
          fit.sds <- sqrt(fit$parameters$variance$sigmasq)
          fit.pros <- fit$parameters$pro
-         message(paste("... component means=", fit.means[1], fit.means[2], sep="\t"))
-         message(paste("... component sds=", fit.sds[1], fit.sds[2], sep="\t"))
+         message(paste(snakemake@wildcards[["probe"]], "... component means=", fit.means[1], fit.means[2], sep="\t"))
+         message(paste(snakemake@wildcards[["probe"]], "... component sds=", fit.sds[1], fit.sds[2], sep="\t"))
          dots.no.overlap.full %>%
            ggplot(aes(x=integratedIntensity.log1p))+
            geom_histogram(aes(y=..density..), bins=1500)+
@@ -106,9 +106,9 @@ switch(plot.type,
            scale_x_continuous(expand=c(0,0))+
            xlab("log1p(Intensity) (a.u.)")+ylab("Count (ALL dots in sample)")+
            stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[1],
-                         args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=2)+
+                         args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=6)+
            stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[2],
-                         args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=2)+
+                         args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=6)+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
@@ -116,11 +116,13 @@ switch(plot.type,
 
 out.path <- snakemake@output[["plot"]]
 
+plot.size.scale <- ifelse(plot.type %in% c("volume", "intensity_all"), 1, 5)
+
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
        dpi = "retina",
-       width = ifelse(plot.type != "volume", 5, 1) * plot.width.in,
-       height = ifelse(plot.type != "volume", 5, 1) * plot.height.in,
+       width = plot.size.scale * plot.width.in,
+       height = plot.size.scale * plot.height.in,
        units = "in", limitsize = F)
 
 warnings()
