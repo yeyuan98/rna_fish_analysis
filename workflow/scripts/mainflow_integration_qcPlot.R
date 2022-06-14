@@ -42,7 +42,8 @@ switch(plot.type,
          dots %>%
            mutate(unique.label = paste(sample, image, sep = "\n")) %>%
            ggplot(aes(x=integratedIntensity))+
-           scale_y_log10(expand = c(0.05,0.05))+
+           scale_y_continuous(expand = c(0.05,0.05))+
+           scale_x_continuous(trans="log1p", expand=c(0,0))+
            xlab("Intensity (a.u.)")+ylab("Count")+
            facet_wrap(vars(unique.label))+
            theme(strip.background = element_blank())+
@@ -55,6 +56,7 @@ switch(plot.type,
            ggplot(aes(x=residuals))+
            geom_histogram()+
            scale_y_continuous(expand = c(0.05,0.05))+
+           scale_x_continuous(trans="log1p", expand=c(0,0))+
            xlab("Residuals (a.u.)")+ylab("Count")+
            facet_wrap(vars(unique.label))+
            theme(strip.background = element_blank())+
