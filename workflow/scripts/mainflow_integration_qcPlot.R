@@ -18,6 +18,19 @@ source("workflow/scripts/mainflow_integration_plot_loader.R")
 dots <- dots.full  # QC Plot needs raw dots.csv integrated data
 
 
+#  Helper function for the working distance QC plot
+workingdist.significance.filter <- function(dots.df, signif.threshold = 0.01){
+  #  Performs lm fit for each image and returns only images that hold significant slope fit.
+  dots.df %>%
+    group_by(sample, image) %>%
+    summarize(slope.signif = summary(lm(y~x, data.frame(y=integratedIntensity, x=z.in.physical)))[2,4]) %>%
+    ungroup() %>%
+    inner_join(dots.df, by = c("sample", "image")) %>%
+    filter(slope.signif <= signif.threshold) %>%
+    dplyr::select(-slope.signif)
+}
+
+
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]
 switch(plot.type,
@@ -59,12 +72,15 @@ switch(plot.type,
        workingDist={
          #  Intensity ~ Z, faceted by sample
          #    We align Z direction for each image, putting one end to be 0 with physical unit
+         #    Simple linear model fitting is performed, and only the significant lines are plotted.
          dots %>%
            mutate(z.in.physical = # '+' direction increase with z_in_pix; otherwise decrease; both take the same range.
-                    ifelse(z_direction == "+", (z_in_pix -1), (z_pixel_num - z_in_pix)) * physicalSizeZ) %>%
+                    ifelse(z_direction == "+", (z_in_pix -1), (z_pixel_num - z_in_pix)) * physicalSizeZ) -> dots
+         dots %>%
+           workingdist.significance.filter(signif.threshold = 0.01) %>%
            ggplot(aes(x=z.in.physical, y=integratedIntensity, group=image, color=image))+
-           #geom_point(alpha=0.3, show.legend = F)+
-           geom_smooth(method="lm", formula= y~x, se=T, show.legend = F)+
+           geom_point(alpha=0.3, show.legend = T)+
+           geom_smooth(method="lm", formula= y~x, se=T)+
            scale_y_log10(expand = c(0.05, 0.05))+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
