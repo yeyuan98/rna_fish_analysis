@@ -7,3 +7,4 @@ dependencies:
   - r-tidyverse
   - r-yaml
   - r-ggpmisc
+  - r-mclust
