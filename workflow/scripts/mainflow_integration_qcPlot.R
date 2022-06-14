@@ -79,8 +79,8 @@ switch(plot.type,
          dots %>%
            workingdist.significance.filter(signif.threshold = 0.001) %>%
            ggplot(aes(x=z.in.physical, y=integratedIntensity, group=image, color=image))+
-           geom_point(alpha=0.3, show.legend = T)+
-           geom_smooth(method="lm", formula= y~x, se=T)+
+           #geom_point(alpha=0.3, show.legend = T)+  # Too many points
+           geom_smooth(method="lm", formula= y~x, se=T, show.legend = T)+
            scale_y_log10(expand = c(0.05, 0.05))+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
