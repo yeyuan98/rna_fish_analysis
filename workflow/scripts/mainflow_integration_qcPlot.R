@@ -99,6 +99,7 @@ switch(plot.type,
          fit.pros <- fit$parameters$pro
          message(paste(snakemake@wildcards[["probe"]], "... component means=", fit.means[1], fit.means[2], sep="\t"))
          message(paste(snakemake@wildcards[["probe"]], "... component sds=", fit.sds[1], fit.sds[2], sep="\t"))
+         message(paste(snakemake@wildcards[["probe"]], "... component proportions=",fit.pros[1], fit.pros[2], sep="\t"))
          dots.no.overlap.full %>%
            ggplot(aes(x=integratedIntensity.log1p))+
            geom_histogram(aes(y=..density..), bins=1500)+
