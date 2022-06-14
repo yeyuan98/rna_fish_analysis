@@ -72,11 +72,13 @@ switch(plot.type,
            geom_smooth(method="lm", formula= y~x, se=F)+
            stat_fit_glance(method = 'lm', method.args = list(formula = y~x), geom = 'text',
                        aes(label = paste0("P-value = ", signif(..p.value.., digits = 3),
-                                          "\n","Adj. Rsq = ", signif(..adj.r.squared.., digits = 3))),
-                       label.x = 0.8, label.y = 0.8, size = 3)+
+                                          "\n","Adj. Rsq = ", signif(..adj.r.squared.., digits = 3)),
+                           colour = ifelse(..p.value.. < 0.001, "red","black")),
+                       label.x = 0.8, label.y = 0.8, size = ifelse(..p.value.. < 0.001, 6,3))+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
            facet_wrap(vars(unique.label))+
+           theme(strip.background = element_blank())+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
