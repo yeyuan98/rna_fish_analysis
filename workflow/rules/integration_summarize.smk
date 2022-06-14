@@ -43,7 +43,10 @@ rule integration_overlap:
     input:
         join("results","{probe}","integration",output_workflow_all(config),"samples.csv")
     output:
-        join("results","{probe}","integration",output_workflow_all(config),"dots.csv")
+        #  Dots that overlap with the mask
+        join("results","{probe}","integration",output_workflow_all(config),"dots.csv"),
+        #  All dots
+        join("results", "{probe}", "integration", output_workflow_all(config), "dots.complete.csv")
     threads:
         config["resources"]["threads"]["integration"]
     resources:
