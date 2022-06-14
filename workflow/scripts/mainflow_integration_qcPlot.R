@@ -106,9 +106,9 @@ switch(plot.type,
            scale_x_continuous(expand=c(0,0))+
            xlab("log1p(Intensity) (a.u.)")+ylab("Count (ALL dots in sample)")+
            stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[1],
-                         args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=6)+
+                         args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=3)+
            stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[2],
-                         args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=6)+
+                         args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=3)+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
