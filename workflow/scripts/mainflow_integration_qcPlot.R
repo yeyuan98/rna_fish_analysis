@@ -23,11 +23,12 @@ workingdist.significance.filter <- function(dots.df, signif.threshold = 0.01){
   #  Performs lm fit for each image and returns only images that hold significant slope fit.
   dots.df %>%
     group_by(sample, image) %>%
-    summarize(slope.signif = summary(lm(y~x, data.frame(y=integratedIntensity, x=z.in.physical)))[2,4]) %>%
-    ungroup() %>%
-    inner_join(dots.df, by = c("sample", "image")) %>%
-    filter(slope.signif <= signif.threshold) %>%
-    dplyr::select(-slope.signif)
+    summarize(slope.signif = summary(lm(y~x, data.frame(y=integratedIntensity, x=z.in.physical)))) %>% print()
+    # summarize(slope.signif = summary(lm(y~x, data.frame(y=integratedIntensity, x=z.in.physical)))[2,4]) %>%
+    # ungroup() %>%
+    # inner_join(dots.df, by = c("sample", "image")) %>%
+    # filter(slope.signif <= signif.threshold) %>%
+    # dplyr::select(-slope.signif)
 }
 
 
