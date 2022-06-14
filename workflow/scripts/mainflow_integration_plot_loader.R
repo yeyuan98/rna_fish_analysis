@@ -1,5 +1,8 @@
 # This script contains helper functions and a data loading flow
 # Will load summarized data from Stage I integration, together with user input to plot.csv, samples.csv, and plot.yaml
+# Note - dots is a summarized data.frame for count plot only;
+#        dots.full is non-summarized data.frame with all the columns; however, it only has dots that overlapped with mask
+#        dots.no.overlap.full is non-summarized and also has ALL dots before overlap processing.
 
 library(tidyverse)
 library(yaml)
@@ -37,10 +40,12 @@ read.sum <- function(snakemake){
     samples <- read_csv(snakemake@input[['samples']], show_col_types = F)
     plot <- read_csv(snakemake@input[['plot']], show_col_types = F)
     dots <- read_csv(snakemake@input[['dots']], show_col_types = F)
+    dots.complete <- read_csv(snakemake@input[['dots_complete']], show_col_types = F)
   }, error = function(e) stop("Could not read samples and/or plot and/or dots integration data."))
   list(samples = samples,
        plot = plot,
-       dots = dots)
+       dots = dots,
+       dots.no.overlap.full = dots.complete)
 }
 
 read.plot.config <- function(snakemake){
@@ -92,7 +97,7 @@ verify.context()
 
 
 # Read in samples and plot integration data
-#   adds: dots, plot, samples
+#   adds: dots, plot, samples, dots.no.overlap.full
 data <- read.sum(snakemake)
 list2env(data, .GlobalEnv)
 

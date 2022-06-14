@@ -87,6 +87,15 @@ switch(plot.type,
            theme(strip.background = element_blank())+
            custom.theme
        },
+       intensity_all={
+         dots.no.overlap.full %>%
+           ggplot(aes(x=integratedIntensity))+
+           geom_histogram()+
+           scale_y_continuous(expand = c(0.05,0.05))+
+           scale_x_continuous(trans="log1p", expand=c(0,0))+
+           xlab("Intensity (a.u.)")+ylab("Count (ALL dots in sample)")+
+           custom.theme
+       },
        stop("Unsupported QC plotting type"))
 
 

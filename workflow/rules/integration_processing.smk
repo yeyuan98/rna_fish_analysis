@@ -34,7 +34,8 @@ rule integration_qcPlot:
     input:
         samples=join("results", "{probe}", "integration", output_workflow_all(config), "samples.csv"),
         plot=join("results", "{probe}", "integration", output_workflow_all(config), "plot.csv"),
-        dots=join("results", "{probe}", "integration", output_workflow_all(config), "dots.csv")
+        dots=join("results", "{probe}", "integration", output_workflow_all(config), "dots.csv"),
+        dots_complete=join("results", "{probe}", "integration", output_workflow_all(config), "dots.complete.csv")
     output:
         plot=join("results","{probe}","integration",output_workflow_all(config), "qcPlots", "{plot_type}.pdf")
     threads:

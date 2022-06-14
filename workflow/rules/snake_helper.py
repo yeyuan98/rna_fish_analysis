@@ -129,7 +129,10 @@ def output_integration_all(stage, config):
         #   Working distance plot
         working_dist = [join("results", probe, "integration", output_workflow_all(config),
                         "qcPlots", "workingDist.pdf") for probe in probes]
-        results = batch + seg_volume + intensity + residual + working_dist
+        #   Merged intensity plot for ALL dots before overlap processing
+        intensity_all = [join("results", probe, "integration", output_workflow_all(config),
+                              "qcPlots", "intensity_all.pdf") for probe in probes]
+        results = batch + seg_volume + intensity + residual + working_dist + intensity_all
     elif stage == "plot":
         results = [join("results", probe, "integration", output_workflow_all(config),
                    "countPlots", "merged.pdf") for probe in probes]
