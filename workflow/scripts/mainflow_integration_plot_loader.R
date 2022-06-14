@@ -121,6 +121,8 @@ dots %>%
   ungroup() %>%
   mutate(group = ordered(group, levels = group.ordered)) -> dots.full
 
+print(dots.full[!complete.cases(dots.full),])
+
 
 # Verify that groups are all defined by the YAML spec. Otherwise raise error.
 if (any(is.na(dots.full$group)))
