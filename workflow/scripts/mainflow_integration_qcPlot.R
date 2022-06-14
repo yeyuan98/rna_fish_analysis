@@ -96,16 +96,19 @@ switch(plot.type,
                        G=2, modelNames = "V")
          fit.means <- fit$parameters$mean
          fit.sds <- sqrt(fit$parameters$variance$sigmasq)
+         fit.pros <- fit$parameters$pro
          message(paste("... component means=", fit.means[1], fit.means[2], sep="\t"))
          message(paste("... component sds=", fit.sds[1], fit.sds[2], sep="\t"))
          dots.no.overlap.full %>%
            ggplot(aes(x=integratedIntensity.log1p))+
-           geom_density(bins=1500)+
-           scale_y_continuous(expand = c(0.05,0.05))+
+           geom_histogram(aes(y=..density..), bins=1500)+
+           scale_y_continuous(expand = c(0,0.01))+
            scale_x_continuous(expand=c(0,0))+
            xlab("log1p(Intensity) (a.u.)")+ylab("Count (ALL dots in sample)")+
-           stat_function(fun = dnorm, args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=2)+
-           stat_function(fun = dnorm, args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=2)+
+           stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[1],
+                         args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", size=2)+
+           stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[2],
+                         args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", size=2)+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
