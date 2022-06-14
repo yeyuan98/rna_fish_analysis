@@ -81,3 +81,5 @@ ggsave(filename = basename(out.path),
        width = plot.width.in,
        height = plot.height.in,
        units = "in")
+
+warnings()
