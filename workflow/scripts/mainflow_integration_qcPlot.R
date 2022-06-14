@@ -122,7 +122,8 @@ plot.size.scale <- ifelse(plot.type %in% c("volume", "intensity_all"), 1, 5)
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
        dpi = "retina",
-       width = plot.size.scale * plot.width.in,
+       #  Volume plot has the sample tags as X axis, give it wider plot.
+       width = ifelse(plot.type == "volume" , 2, 1) * plot.size.scale * plot.width.in,
        height = plot.size.scale * plot.height.in,
        units = "in", limitsize = F)
 
