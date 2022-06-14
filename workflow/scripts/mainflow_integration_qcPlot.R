@@ -62,7 +62,7 @@ switch(plot.type,
          dots %>%
            mutate(z.in.physical = # '+' direction increase with z_in_pix; otherwise decrease; both take the same range.
                     ifelse(z_direction == "+", (z_in_pix -1), (z_pixel_num - z_in_pix)) * physicalSizeZ) %>%
-           ggplot(aes(x=z.in.physical, y=integratedIntensity))+
+           ggplot(aes(x=z.in.physical, y=integratedIntensity, group=image, color=image))+
            geom_point(alpha=0.3)+
            geom_smooth()+
            scale_y_log10(expand = c(0.05, 0.05))+
