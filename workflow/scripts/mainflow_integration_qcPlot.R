@@ -73,8 +73,8 @@ switch(plot.type,
            stat_fit_glance(method = 'lm', method.args = list(formula = y~x), geom = 'text_npc',
                        aes(label = paste0("P-value = ", signif(..p.value.., digits = 3),
                                           "\n","Adj. Rsq = ", signif(..adj.r.squared.., digits = 3)),
-                           colour = ifelse(..p.value.. < 0.001, "red","black")),
-                       label.x = 0.6, label.y = 0.3, size = 6)+
+                           colour = ifelse(..p.value.. < 0.001, "#FF00FF","#000000")),
+                       label.x = 1, label.y = 0.3, size = 6)+
            xlab("Z Position per dot (physical unit)")+
            ylab("Integrated intensity per dot (arbitrary unit)")+
            facet_wrap(vars(unique.label))+
