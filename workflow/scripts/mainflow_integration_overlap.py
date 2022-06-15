@@ -32,7 +32,8 @@ def integration_overlap(samples_csv, dots_csvs):
                 dot_reader = csv.DictReader(dotfile, delimiter='\t')
                 for dotrow in dot_reader:
                     # Process each dot
-                    x, y, z = float(dotrow['x_in_pix']), float(dotrow['y_in_pix']), float(dotrow['z_in_pix'])
+                    # WARNING ------ MATLAB's pixel order is flipped. Images with ImageJ shape (x, y) will be (y, x)!!!
+                    x, y, z = float(dotrow['y_in_pix']), float(dotrow['x_in_pix']), float(dotrow['z_in_pix'])
                     x, y, z = round(x) - 1, round(y) - 1, round(z) - 1  # to shift 1px for 0-based array index
                     x, y, z = [max(t, 0) for t in (x, y, z)]  # make sure no negatives
                     dot_dict = dotrow.copy()
