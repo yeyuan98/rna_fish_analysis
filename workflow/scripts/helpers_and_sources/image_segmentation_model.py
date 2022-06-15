@@ -54,8 +54,9 @@ def getMask(model, image, device, original_xy_pixels):
         :return: final predicted mask, shape=xyz, dtype=uint8
     """
     shapexy = image.shape[0]
-    pred_masks = np.empty((shapexy, shapexy, image.shape[3]), dtype=np.uint8)
-    for i in range(image.shape[3]):
+    shapez = image.shape[3]
+    pred_masks = np.empty((shapexy, shapexy, shapez), dtype=np.uint8)
+    for i in range(shapez):
         img = image[:, :, :, i]  # shape = xyc (hwc)
         # Pytorch requires cxy
         img = np.transpose(img, (2, 0, 1))
@@ -71,5 +72,5 @@ def getMask(model, image, device, original_xy_pixels):
     for i in range(pred_masks.shape[2]):
         # ---------- NEED TO VERIFY THIS!!! ------------
         pred_masks_original[:, :, i] = cv.resize(pred_masks[:, :, i],
-                                                 dsize=(original_x, original_y),interpolation=cv.INTER_NEAREST)
+                                                 dsize=(original_y, original_x), interpolation=cv.INTER_NEAREST)
     return pred_masks_original
