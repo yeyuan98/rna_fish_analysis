@@ -40,7 +40,7 @@ switch(plot.type,
          gmm.path <- file.path(dirname(snakemake@input[["dots"]]), "qcPlots", "gmm.fit.csv")
          if (!file.exists(gmm.path)) stop("Replotting requires GMM fit data. Please performed int_qc rule first.")
          gmm.fit <- read_csv(gmm.path)
-         intensity.threshold <- gmm.fit$mean[1]
+         intensity.threshold <- exp(gmm.fit$mean[1]) - 1
          # filter data
 
          print(paste("full list nrows=", nrow(dots.full)))
