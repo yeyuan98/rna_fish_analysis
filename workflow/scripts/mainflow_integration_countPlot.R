@@ -42,6 +42,10 @@ switch(plot.type,
          gmm.fit <- read_csv(gmm.path)
          intensity.threshold <- gmm.fit$mean[1]
          # filter data
+
+         print(paste("full list nrows=", nrow(dots.full)))
+         print(paste("filtered list nrows=", nrow(dots.full %>% filter(integratedIntensity >= intensity.threshold))))
+
          dots.full %>%
            filter(integratedIntensity >= intensity.threshold) %>%
            group_by(group, image, sample, batch) %>%
