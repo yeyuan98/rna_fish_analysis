@@ -35,9 +35,12 @@ switch(plot.type,
 
 
 out.path <- snakemake@output[["plot"]]
+
+width.scale.factor <- ifelse(plot.type == "batch.qc", 2, 1)
+
 ggsave(filename = basename(out.path),
        path = dirname(out.path),
        dpi = "retina",
-       width = plot.width.in,
+       width = width.scale.factor * plot.width.in,
        height = plot.height.in,
        units = "in")
