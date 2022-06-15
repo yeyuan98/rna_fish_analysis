@@ -102,7 +102,7 @@ switch(plot.type,
          message(paste(snakemake@wildcards[["probe"]], "... component proportions=",fit.pros[1], fit.pros[2], sep="\t"))
          #  We also save the GMM results to a file for replotting the results
          gmm.fit.path <- file.path(dirname(snakemake@output[["plot"]]), "gmm.fit.csv")
-         write_csv(gmm.fit.path, tibble(mean = fit.means, sd = fit.sds, proportions = fit.pros))
+         write_csv(tibble(mean = fit.means, sd = fit.sds, proportions = fit.pros), file=gmm.fit.path)
          message(paste("GMM fit results written to", gmm.fit.path))
          dots.no.overlap.full %>%
            ggplot(aes(x=integratedIntensity.log1p))+
