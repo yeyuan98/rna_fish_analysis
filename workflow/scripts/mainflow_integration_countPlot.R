@@ -13,31 +13,41 @@ library(tidyverse)
 source("workflow/scripts/mainflow_integration_plot_loader.R")
 
 
-dots %>%
-  mutate(dots.per.cell = dot.count / num.cells) -> dots
-dots %>%
-  ggplot(aes(x = group, y = dots.per.cell))+
+# Define the base plot without data
+base.countPlot <-
+  ggplot(data = NULL, aes(x = group, y = dots.per.cell))+
   geom_point()+
   scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
   xlab(plot.xlab)+
   ylab(plot.ylab)+
-  custom.theme -> plot.countPlot
+  custom.theme
 
 
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]
 switch(plot.type,
-       merged=message("Generating merged count plot"),
+       merged={
+         message("Generating merged count plot")
+         plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
+       },
        batch.qc={
-         plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
+         plot.countPlot <- base.countPlot + facet_wrap(vars(batch)) %+%
+                           (dots %>% mutate(dots.per.cell = dot.count / num.cells))
          message("Generating batch faceted plot")
        },
        replot={
+         # read in GMM fit
          gmm.path <- file.path(dirname(snakemake@input[["dots"]]), "qcPlots", "gmm.fit.csv")
          if (!file.exists(gmm.path)) stop("Replotting requires GMM fit data. Please performed int_qc rule first.")
          gmm.fit <- read_csv(gmm.path)
          intensity.threshold <- gmm.fit$mean[1]
-         plot.countPlot <- plot.countPlot %+% subset(dots, integratedIntensity >= intensity.threshold)
+         # filter data
+         dots.full %>%
+           filter(integratedIntensity >= intensity.threshold) %>%
+           group_by(group, image, sample, batch) %>%
+           summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") -> dots.filtered
+         # add on data to plot
+         plot.countPlot <- base.countPlot %+% (dots.filtered %>% mutate(dots.per.cell = dot.count / num.cells))
        },
        stop("Unsupported plotting type"))
 
