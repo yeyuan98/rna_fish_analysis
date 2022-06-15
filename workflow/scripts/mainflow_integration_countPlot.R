@@ -25,15 +25,16 @@ base.countPlot <-
 
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]
+probe <- snakemake@wildcards[["probe"]]
 switch(plot.type,
        merged={
-         message("Generating merged count plot")
+         message(paste("Generating merged count plot for", probe))
          plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
        },
        batch.qc={
          plot.countPlot <- base.countPlot + facet_wrap(vars(batch)) %+%
                            (dots %>% mutate(dots.per.cell = dot.count / num.cells))
-         message("Generating batch faceted plot")
+         message(paste("Generating batch faceted count plot for", probe))
        },
        replot={
          # read in GMM fit
@@ -42,16 +43,16 @@ switch(plot.type,
          gmm.fit <- read_csv(gmm.path)
          intensity.threshold <- exp(gmm.fit$mean[1]) - 1
          # filter data
-
-         print(paste("full list nrows=", nrow(dots.full)))
-         print(paste("filtered list nrows=", nrow(dots.full %>% filter(integratedIntensity >= intensity.threshold))))
-
          dots.full %>%
-           filter(integratedIntensity >= intensity.threshold) %>%
+           filter(integratedIntensity >= intensity.threshold) -> dots.filtered
+         message(paste("Filtered dots by intensity for ", probe, "before filter nrows=", nrow(dots.full)))
+         print(paste("Filtered dots by intensity for ", probe, "after filter nrows=", nrow(dot.filtered)))
+         dots.filtered %>%
            group_by(group, image, sample, batch) %>%
            summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") -> dots.filtered
          # add on data to plot
          plot.countPlot <- base.countPlot %+% (dots.filtered %>% mutate(dots.per.cell = dot.count / num.cells))
+         message(paste("Generating filtered count plot for", probe))
        },
        stop("Unsupported plotting type"))
 
