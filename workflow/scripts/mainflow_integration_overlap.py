@@ -33,6 +33,7 @@ def integration_overlap(samples_csv, dots_csvs):
                 for dotrow in dot_reader:
                     # Process each dot
                     # WARNING ------ MATLAB's pixel order is flipped. Images with ImageJ shape (x, y) will be (y, x)!!!
+                    # MATLAB uses (row, column) order, and row is basically y for other image processing routines.
                     x, y, z = float(dotrow['y_in_pix']), float(dotrow['x_in_pix']), float(dotrow['z_in_pix'])
                     x, y, z = round(x) - 1, round(y) - 1, round(z) - 1  # to shift 1px for 0-based array index
                     x, y, z = [max(t, 0) for t in (x, y, z)]  # make sure no negatives
