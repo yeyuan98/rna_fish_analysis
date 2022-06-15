@@ -34,7 +34,7 @@ switch(plot.type,
        },
        replot={
          gmm.path <- file.path(dirname(snakemake@input[["dots"]]), "qcPlots", "gmm.fit.csv")
-         if (!exists(gmm.path)) stop("Replotting requires GMM fit data. Please performed int_qc rule first.")
+         if (!file.exists(gmm.path)) stop("Replotting requires GMM fit data. Please performed int_qc rule first.")
          gmm.fit <- read_csv(gmm.path)
          intensity.threshold <- gmm.fit$mean[1]
          plot.countPlot <- plot.countPlot %+% subset(dots, integratedIntensity >= intensity.threshold)
