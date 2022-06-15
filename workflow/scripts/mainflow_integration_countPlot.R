@@ -14,7 +14,8 @@ source("workflow/scripts/mainflow_integration_plot_loader.R")
 
 
 dots %>%
-  mutate(dots.per.cell = dot.count / num.cells) %>%
+  mutate(dots.per.cell = dot.count / num.cells) -> dots
+dots %>%
   ggplot(aes(x = group, y = dots.per.cell))+
   geom_point()+
   scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
@@ -30,6 +31,13 @@ switch(plot.type,
        batch.qc={
          plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
          message("Generating batch faceted plot")
+       },
+       replot={
+         gmm.path <- file.path(dirname(snakemake@input[["dots"]]), "qcPlots", "gmm.fit.csv")
+         if (!exists(gmm.path)) stop("Replotting requires GMM fit data. Please performed int_qc rule first.")
+         gmm.fit <- read_csv(gmm.path)
+         intensity.threshold <- gmm.fit$mean[1]
+         plot.countPlot <- plot.countPlot %+% subset(dots, integratedIntensity >= intensity.threshold)
        },
        stop("Unsupported plotting type"))
 

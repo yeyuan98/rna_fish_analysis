@@ -136,6 +136,9 @@ def output_integration_all(stage, config):
     elif stage == "plot":
         results = [join("results", probe, "integration", output_workflow_all(config),
                    "countPlots", "merged.pdf") for probe in probes]
+    elif stage == "replot":
+        results = [join("results", probe, "integration", output_workflow_all(config),
+                   "countPlots", "replot.pdf") for probe in probes]
     else:
         raise NotImplementedError("Unsupported integration stage")
     return results

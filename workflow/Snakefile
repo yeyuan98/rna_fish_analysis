@@ -36,3 +36,9 @@ rule int_qc:
     # Requires modification to the integration output
     input:
         output_integration_all(stage="qc",config=config)
+
+rule int_replot:
+    # Allows replot of the data after QC checking
+    #   essentially just apply filters of the dots as specified in countPlot script.
+    input:
+        output_integration_all(stage="replot",config=config)
