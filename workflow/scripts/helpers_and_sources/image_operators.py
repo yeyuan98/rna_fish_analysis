@@ -183,3 +183,40 @@ def imStackAutoAdjust(img, method="simple", parameters=None):
     for i in range(ztotal):
         result[:, :, i] = imAutoAdjust(img[:, :, i], method, parameters)
     return result
+
+
+def imPadding(img):
+    """
+        accepts square/rectangular images. Do nothing if square, add padding if rectangular to make square image
+    :param img: multichannel, single z-slice image of shape xyc
+    :return: padding image of size xyc where x=y.
+        If x<y, will add blank pixels in all channels [(x+1)...y ,:, :]
+        If x>y, will add blank pixels in all channels [:, (y+1)...x, :]
+    """
+    (img_x, img_y) = img.shape[:2]
+    square_target = max((img_x, img_y))
+    if img_x > img_y:
+        padding = ((0, 0), (0, img_x - img_y), (0, 0))
+    else:
+        padding = ((0, img_y - img_x), (0, 0), (0, 0))
+    return np.pad(img, padding, mode='constant', constant_values=0)
+
+
+def imPaddingRestore(img, original_x, original_y):
+    """
+        reverse operation of imPadding.
+    :param img: multichannel, single z-slice image of shape x, x, c (i.e., square image)
+    :param original_x: original x pixel count
+    :param original_y: original y pixel count
+    :return: image with padding removed, shape original_x, original_y, c
+    """
+    (img_x, img_y) = img.shape[:2]
+    if img_x != img_y:
+        raise ValueError("Paddng restore must have square input.")
+    if img_x == original_x:
+        #  x direction is not padded -> reverse y direction padding by slicing [:, :original_y, :]
+        return img[:, :original_y, :]
+    elif img_x == original_y:
+        return img[:original_x, :, :]
+    else:
+        raise ValueError("Original must have the same ")
