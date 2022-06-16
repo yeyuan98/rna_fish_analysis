@@ -33,7 +33,7 @@ class SegmentationModel(nn.Module):
         logits = self.arc(images)
 
         # If masks are provided (i.e., annotated images) calculate loss in forward run
-        if masks != None:
+        if masks is not None:
             loss1 = DiceLoss(mode='binary')(logits, masks)
             loss2 = nn.BCEWithLogitsLoss()(logits, masks)  # BCE = binary cross entropy
             return logits, loss1 + loss2  # Combining these two losses by adding together to get the final loss function
@@ -70,7 +70,7 @@ def getMask(model, image, device, original_xy_pixels):
     original_y = original_xy_pixels["y"]
     pred_masks_original = np.empty((original_x, original_y, image.shape[3]), dtype=np.uint8)
     for i in range(pred_masks.shape[2]):
-        # ---------- NEED TO VERIFY THIS!!! ------------
+        # ---------- NEED TO VERIFY THIS & GENERALIZE THIS INTO A FUNCTION ------------
         pred_masks_original[:, :, i] = cv.resize(pred_masks[:, :, i],
                                                  dsize=(original_y, original_x), interpolation=cv.INTER_NEAREST)
     return pred_masks_original

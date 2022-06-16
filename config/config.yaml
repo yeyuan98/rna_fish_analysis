@@ -64,7 +64,7 @@ segmentation_models:
     encoder: "timm-efficientnet-b0"
     weights: "imagenet"
     augmentation_function: "augmentations_enhanceThenResize"
-    augmentation_function_params: {}  # if no parameter needed, put {} here
+    augmentation_function_params: {"padding":True}  # if no parameter needed, put {} here
     fill: true  # should we perform filling for the output prediction mask
     target_pixels: 320
   nucleus_aggressive:
@@ -74,6 +74,6 @@ segmentation_models:
     encoder: "timm-efficientnet-b0"
     weights: "imagenet"
     augmentation_function: "augmentations_enhanceThenResize"
-    augmentation_function_params: {}  # if no parameter needed, put {} here
+    augmentation_function_params: {"padding":True}  # if no parameter needed, put {} here
     fill: true  # should we perform filling for the output prediction mask
     target_pixels: 320

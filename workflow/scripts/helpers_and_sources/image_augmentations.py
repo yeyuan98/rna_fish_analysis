@@ -16,7 +16,8 @@ import numpy as np
 import cv2 as cv
 # TODO: use package relative import for more pythonic code.
 # noinspection PyUnresolvedReferences
-from helpers_and_sources.image_operators import imStackAutoAdjust  # Search path includes scripts folder only.
+# Search path includes scripts folder only.
+from helpers_and_sources.image_operators import imStackAutoAdjust, imPadding
 
 
 # Helper functions for augmentations
@@ -41,15 +42,23 @@ def augmentations_resize(array, target_pixels):
     return result
 
 
-def augmentations_enhanceThenResize(array, target_pixels, **kwargs):
+def augmentations_enhanceThenResize(array, target_pixels, padding=False, **kwargs):
     """
     This function enhances the image contrast and then resize the image
     Contrast enhancement is done via image_operators.imStackAutoAdjust
+    :param array: Input image, either mask or stack with shape xycz
+    :param target_pixels: Target size of the image after resizing. x=y=target_pixels
+    :param padding: bool, whether to perform image padding before resizing. Otherwise, rectangular images can distort
+    :return: augmented image w/ contrast enhancement, optional padding, and resizing. shape xycz is maintained
+        Note - if padding is specified, the image will be padded before resizing
     """
     # First, check whether we are looking at mask images, which should be uint8
     if array.dtype == np.uint8:
         # For mask image, we don't need contrast enhancement
-        return augmentations_resize(array, target_pixels)
+        if padding:  # do padding if specified
+            return augmentations_resize(imPadding(array), target_pixels)
+        else:
+            return augmentations_resize(array, target_pixels)
     else:
         # For real data, we perform contrast enhancement
         ccount = array.shape[2]
@@ -57,4 +66,6 @@ def augmentations_enhanceThenResize(array, target_pixels, **kwargs):
         for c in range(ccount):
             currentStack = array[:, :, c, :]
             enhanced[:, :, c, :] = imStackAutoAdjust(currentStack, **kwargs)
+            if padding:  # perform padding before resize after enhancement for image
+                enhanced[:, :, c, :] = imPadding(enhanced[:, :, c, :])
         return augmentations_resize(array, target_pixels)
