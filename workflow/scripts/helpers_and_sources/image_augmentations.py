@@ -17,7 +17,7 @@ import cv2 as cv
 # TODO: use package relative import for more pythonic code.
 # noinspection PyUnresolvedReferences
 # Search path includes scripts folder only.
-from helpers_and_sources.image_operators import imStackAutoAdjust, imPadding
+from helpers_and_sources.image_operators import imStackAutoAdjust, imPadding, imPaddingRestore
 
 
 # Helper functions for augmentations
@@ -69,3 +69,31 @@ def augmentations_enhanceThenResize(array, target_pixels, padding=False, **kwarg
             if padding:  # perform padding before resize after enhancement for image
                 enhanced[:, :, c, :] = imPadding(enhanced[:, :, c, :])
         return augmentations_resize(array, target_pixels)
+
+
+def revaug_resize(array, original_pixel_x, original_pixel_y):
+    """
+        Reverse augmentation "augmentations_resize". Useful for scaling segmentation model's output masks.
+    :param array: Input single-channel image, shape xyz
+    :param original_pixel_x: original pixel count in x direction
+    :param original_pixel_y: original pixel count in y direction
+    """
+    array_original = np.empty((original_pixel_x, original_pixel_y, array.shape[2]), dtype=array.dtype)
+    for i in range(array.shape[2]):
+        # ---------- NEED TO VERIFY THIS & GENERALIZE THIS INTO A FUNCTION ------------
+        array_original[:, :, i] = cv.resize(array[:, :, i],
+                                            dsize=(original_pixel_y, original_pixel_x), interpolation=cv.INTER_NEAREST)
+    return array_original
+
+
+def revaug_resizeThenUnpad(array, original_pixel_x, original_pixel_y):
+    """
+        Partially reverse augmentation "augmentations_enhanceThenResize(..., padding=True)".
+        Useful for rescaling segmentation model output to originally-sized segmentation mask.
+        ONLY supports single-channel array input.
+    :param array: Input single-channel image, shape xyz
+    :param original_pixel_x: original pixel count in x direction
+    :param original_pixel_y: original pixel count in y direction
+    """
+    result = revaug_resize(array, original_pixel_x, original_pixel_y)
+    return imPaddingRestore(result, original_pixel_x, original_pixel_y)

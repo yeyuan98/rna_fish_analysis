@@ -8,6 +8,7 @@ from torch import nn
 import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.losses import DiceLoss
 import cv2 as cv
+from helpers_and_sources.image_augmentations import revaug_resizeThenUnpad
 
 
 # SMP pretrained segmentation model, flexible architecture
@@ -68,9 +69,5 @@ def getMask(model, image, device, original_xy_pixels):
         pred_masks[:, :, i] = pred_mask.detach().cpu().squeeze(0).numpy().astype(np.uint8)
     original_x = original_xy_pixels["x"]
     original_y = original_xy_pixels["y"]
-    pred_masks_original = np.empty((original_x, original_y, image.shape[3]), dtype=np.uint8)
-    for i in range(pred_masks.shape[2]):
-        # ---------- NEED TO VERIFY THIS & GENERALIZE THIS INTO A FUNCTION ------------
-        pred_masks_original[:, :, i] = cv.resize(pred_masks[:, :, i],
-                                                 dsize=(original_y, original_x), interpolation=cv.INTER_NEAREST)
+    pred_masks_original = revaug_resizeThenUnpad(pred_masks, original_x, original_y)
     return pred_masks_original
