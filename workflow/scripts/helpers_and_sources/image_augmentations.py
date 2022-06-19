@@ -61,10 +61,11 @@ def augmentations_enhanceThenResize(array, target_pixels, padding=False, **kwarg
             return augmentations_resize(array, target_pixels)
     else:
         # For real data, we perform contrast enhancement
-        ccount = array.shape[2]
+        ccount = array.shape[2]  # num of channels
+        zcount = array.shape[3]  # num of z-slices
         enhanced = np.empty(array.shape, dtype=array.dtype)
         if padding:  # If padding is used, we need to store into square shape after padding.
-            padded = np.empty([target_pixels, target_pixels, ccount], dtype=array.dtype)
+            padded = np.empty([target_pixels, target_pixels, ccount, zcount], dtype=array.dtype)
         for c in range(ccount):
             currentStack = array[:, :, c, :]
             enhanced[:, :, c, :] = imStackAutoAdjust(currentStack, **kwargs)
