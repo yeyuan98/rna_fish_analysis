@@ -103,5 +103,6 @@ def revaug_resizeThenUnpad(array, original_pixel_x, original_pixel_y):
     :param original_pixel_x: original pixel count in x direction
     :param original_pixel_y: original pixel count in y direction
     """
-    result = revaug_resize(array, original_pixel_x, original_pixel_y)
+    resize_xy = max(original_pixel_x, original_pixel_y)  # resize target pixel size
+    result = revaug_resize(array, resize_xy, resize_xy)
     return imPaddingRestore(result, original_pixel_x, original_pixel_y)
