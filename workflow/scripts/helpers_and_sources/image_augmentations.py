@@ -65,7 +65,9 @@ def augmentations_enhanceThenResize(array, target_pixels, padding=False, **kwarg
         zcount = array.shape[3]  # num of z-slices
         enhanced = np.empty(array.shape, dtype=array.dtype)
         if padding:  # If padding is used, we need to store into square shape after padding.
-            padded = np.empty([target_pixels, target_pixels, ccount, zcount], dtype=array.dtype)
+            #  However, the shape is not final target_pixels, but rather max of x and y dimensions
+            padded_xy = max(array.shape[:2])
+            padded = np.empty([padded_xy, padded_xy, ccount, zcount], dtype=array.dtype)
         for c in range(ccount):
             currentStack = array[:, :, c, :]
             enhanced[:, :, c, :] = imStackAutoAdjust(currentStack, **kwargs)
