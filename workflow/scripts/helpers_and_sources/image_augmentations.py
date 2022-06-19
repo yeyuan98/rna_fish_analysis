@@ -63,12 +63,17 @@ def augmentations_enhanceThenResize(array, target_pixels, padding=False, **kwarg
         # For real data, we perform contrast enhancement
         ccount = array.shape[2]
         enhanced = np.empty(array.shape, dtype=array.dtype)
+        if padding:  # If padding is used, we need to store into square shape after padding.
+            padded = np.empty([target_pixels, target_pixels, ccount], dtype=array.dtype)
         for c in range(ccount):
             currentStack = array[:, :, c, :]
             enhanced[:, :, c, :] = imStackAutoAdjust(currentStack, **kwargs)
             if padding:  # perform padding before resize after enhancement for image
-                enhanced[:, :, c, :] = imPadding(enhanced[:, :, c, :])
-        return augmentations_resize(array, target_pixels)
+                padded[:, :, c, :] = imPadding(enhanced[:, :, c, :])
+        if padding:
+            return augmentations_resize(padded, target_pixels)
+        else:  # If padding is not used, we resize the enhanced image.
+            return augmentations_resize(enhanced, target_pixels)
 
 
 def revaug_resize(array, original_pixel_x, original_pixel_y):
