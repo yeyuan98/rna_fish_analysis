@@ -79,7 +79,7 @@ def gaussian_plot(dots_dict, pixel_sizes, sigma_xy, sigma_z):
         base_z = b_box["base_loc"][2]
         img[img_x[0]:(img_x[1]+1),
             img_y[0]:(img_y[1]+1),
-            img_z[0]:(img_z[1]+1)] = gaussian_base[base_x[0]:(base_x[1]+1),
-                                                   base_y[0]:(base_y[1]+1),
-                                                   base_z[0]:(base_z[1]+1)] * int_intensity[i]
+            img_z[0]:(img_z[1]+1)] += (gaussian_base[base_x[0]:(base_x[1]+1),
+                                                     base_y[0]:(base_y[1]+1),
+                                                     base_z[0]:(base_z[1]+1)] * int_intensity[i]).astype(np.uint16)
     return img
