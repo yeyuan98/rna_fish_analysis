@@ -34,7 +34,7 @@ def integration_overlap(samples_csv, output_paths):
             image_name = splitext(split(row['mask_path'])[1])[0]
             viz_dots_dict = {"x": [], "y": [], "z": [], "integratedIntensity": []}  # for gaussian_plot
             makedirs(join(viz_dir, sample), exist_ok=True)  # Make directory for the sample if needed
-            viz_img_path = join(viz_dir, sample, image_name, ".tif")  # Save path for the visualization
+            viz_img_path = join(viz_dir, sample, image_name + ".tif")  # Save path for the visualization
             with open(row['fishdot_path'], 'r') as dotfile:
                 dot_reader = csv.DictReader(dotfile, delimiter='\t')
                 for dotrow in dot_reader:
