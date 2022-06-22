@@ -2,22 +2,26 @@
     Workflow script to get fish dots in the given segmentation mask
 """
 from helpers_and_sources.mainflow_helpers import *
+from helpers_and_sources import gaussian_plot
 import tifffile as tf
 import numpy as np
 import csv
-from os.path import split, splitext
+from os.path import split, splitext, join
+from os import makedirs
 
 
-def integration_overlap(samples_csv, dots_csvs):
+def integration_overlap(samples_csv, output_paths):
     """
         For each image file in samples_csv, reads in segmentation mask and dots list, and performs union.
     :param samples_csv: Path to the integrated per image information
-    :param dots_csvs: Paths to the output dots csv file (overlapped 1st, complete 2nd)
+    :param output_paths: Paths to the output dots csv file and visualization folder
     """
     result = []  # will be a list of dicts for csv.DictWriter.
     result_complete = []  # All dots without any overlap check
-    dots_csv = dots_csvs[0]
-    dots_csv_complete = dots_csvs[1]
+    dots_csv = output_paths["dots"]
+    dots_csv_complete = output_paths["dots_complete"]
+    viz_dir = output_paths["gaussian_fit"]
+    makedirs(viz_dir, exist_ok=True)  # visualization folder
     with open(samples_csv, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -28,6 +32,9 @@ def integration_overlap(samples_csv, dots_csvs):
             mask = np.transpose(mask, axes=(2, 1, 0))  # shape=xyz
             psx, psy, psz = float(row['physicalSizeX']), float(row['physicalSizeY']), float(row['physicalSizeZ'])
             image_name = splitext(split(row['mask_path'])[1])[0]
+            viz_dots_dict = {"x": [], "y": [], "z": [], "integratedIntensity": []}  # for gaussian_plot
+            makedirs(join(viz_dir, sample), exist_ok=True)  # Make directory for the sample if needed
+            viz_img_path = join(viz_dir, sample, image_name, ".tif")  # Save path for the visualization
             with open(row['fishdot_path'], 'r') as dotfile:
                 dot_reader = csv.DictReader(dotfile, delimiter='\t')
                 for dotrow in dot_reader:
@@ -42,7 +49,18 @@ def integration_overlap(samples_csv, dots_csvs):
                                      'physicalSizeX': psx, 'physicalSizeY': psy, 'physicalSizeZ': psz})
                     if mask[x, y, z] > 0:  # dot in segmentation mask
                         result.append(dot_dict)
+                        viz_dots_dict["x"].append(x)
+                        viz_dots_dict["y"].append(y)
+                        viz_dots_dict["z"].append(z)
+                        viz_dots_dict["integratedIntensity"].append(dotrow["integratedIntensity"])
                     result_complete.append(dot_dict)  # add to the complete list regardless
+            #  Save visualization for current image
+            sigma_xy = round(snakemake.config["fishdot"]["psf_xy"] / (1E3 * psx))
+            sigma_z = round(snakemake.config["fishdot"]["psf_z"] / (1E3 * psz))
+            viz_array = gaussian_plot.gaussian_plot(viz_dots_dict, mask.shape, sigma_xy, sigma_z)
+            tf.imwrite(viz_img_path, np.transpose(viz_array, axes=(2, 1, 0)),
+                       compression=tf.TIFF.COMPRESSION.DEFLATE, imagej=True,
+                       metadata={'axes': 'ZYX'})
     # Next, write results
     with open(dots_csv, 'w') as csvfile:
         result_fields = result[0].keys()

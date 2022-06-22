@@ -44,9 +44,11 @@ rule integration_overlap:
         join("results","{probe}","integration",output_workflow_all(config),"samples.csv")
     output:
         #  Dots that overlap with the mask
-        join("results","{probe}","integration",output_workflow_all(config),"dots.csv"),
+        dots=join("results","{probe}","integration",output_workflow_all(config),"dots.csv"),
         #  All dots
-        join("results", "{probe}", "integration", output_workflow_all(config), "dots.complete.csv")
+        dots_complete=join("results", "{probe}", "integration", output_workflow_all(config), "dots.complete.csv"),
+        #  Gaussian fit plotting of the overlapped dots
+        gaussian_fit=directory(join("results", "{probe}", "integration", output_workflow_all(config), "overlapped_viz"))
     threads:
         config["resources"]["threads"]["integration"]
     resources:
