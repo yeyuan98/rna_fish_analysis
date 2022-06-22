@@ -52,7 +52,7 @@ def integration_overlap(samples_csv, output_paths):
                         viz_dots_dict["x"].append(x)
                         viz_dots_dict["y"].append(y)
                         viz_dots_dict["z"].append(z)
-                        viz_dots_dict["integratedIntensity"].append(round(dotrow["integratedIntensity"]))
+                        viz_dots_dict["integratedIntensity"].append(round(float(dotrow["integratedIntensity"])))
                     result_complete.append(dot_dict)  # add to the complete list regardless
             #  Save visualization for current image
             sigma_xy = round(snakemake.config["fishdot"]["psf_xy"] / (1E3 * psx))
