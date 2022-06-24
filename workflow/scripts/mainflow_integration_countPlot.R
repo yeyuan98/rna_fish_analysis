@@ -24,8 +24,8 @@ base.countPlot <-
   ggplot(data = NULL, aes(x = group, y = dots.per.cell))+
   geom_point()+
   stat_summary(fun.data = sem.error,
-               geom="errorbar", color="red", width=0.2)+  # This calculates s.e.m.
-  stat_summary(fun = mean, geom="point", color="red", shape=3)+  # This calculates mean.
+               geom="errorbar", color="red", width=0.1)+  # This calculates s.e.m.
+  stat_summary(fun = mean, geom="point", color="red", shape=3, size=5)+  # This calculates mean.
   scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
   xlab(plot.xlab)+
   ylab(plot.ylab)+
