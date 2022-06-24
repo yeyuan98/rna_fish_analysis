@@ -49,8 +49,9 @@ switch(plot.type,
          plot.countPlot <- base.countPlot %+% plot.data
          plot.countPlot <- plot.countPlot +
                            facet_wrap(vars(batch)) +
+                           aes(x = group, y = dots.per.cell, label=image) +
                            geom_point(color=ifelse(plot.data$include, "black", "red")) +
-                           geom_text_repel(label=image, max.overlaps = 30)
+                           geom_text_repel(max.overlaps = 30)
          message(paste("Generating batch faceted count plot for", probe))
        },
        replot={
