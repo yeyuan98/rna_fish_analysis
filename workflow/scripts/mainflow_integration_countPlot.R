@@ -44,8 +44,15 @@ switch(plot.type,
        },
        batch.qc={
          plot.data <- dots %>%
-                        mutate(dots.per.cell = dot.count / num.cells) %>%
-                        mutate(image = ifelse(include, "", image))
+                        mutate(dots.per.cell = dot.count / num.cells)
+         #  compute statistics for outlier marking
+         plot.data %>%
+           group_by(group) %>%
+           summarize(m = mean(dots.per.cell), sem = sd(dots.per.cell)/sqrt(n()), .groups="drop") -> plot.stat
+         plot.data <- plot.data %>%
+                        inner_join(plot.stat, by = "group") %>%
+                        mutate(outlier = dots.per.cell < m - 1.5*sem | dots.per.cell > m + 1.5*sem) %>%
+                        mutate(image = ifelse(include & !outlier, "", image))
          plot.countPlot <- base.countPlot %+% plot.data
          plot.countPlot <- plot.countPlot +
                            facet_wrap(vars(batch)) +
