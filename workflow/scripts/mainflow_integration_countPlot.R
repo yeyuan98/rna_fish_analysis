@@ -8,6 +8,7 @@ if (F){
 
 
 library(tidyverse)
+library(ggrepel)
 
 
 source("workflow/scripts/mainflow_integration_plot_loader.R")
