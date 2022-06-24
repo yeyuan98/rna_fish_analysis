@@ -38,6 +38,10 @@ probe <- snakemake@wildcards[["probe"]]
 switch(plot.type,
        merged={
          message(paste("Generating merged count plot for", probe))
+
+         print(head(dots$include))
+         print(str(dots$include))
+
          plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells) %>% filter(include)
          plot.countPlot <- base.countPlot %+% plot.data
        },
