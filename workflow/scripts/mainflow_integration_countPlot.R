@@ -51,7 +51,7 @@ switch(plot.type,
            summarize(m = mean(dots.per.cell), sem = sd(dots.per.cell)/sqrt(n()), .groups="drop") -> plot.stat
          plot.data <- plot.data %>%
                         inner_join(plot.stat, by = "group") %>%
-                        mutate(outlier = dots.per.cell < m - 1.5*sem | dots.per.cell > m + 1.5*sem) %>%
+                        mutate(outlier = dots.per.cell < m - 3*sem | dots.per.cell > m + 3*sem) %>%
                         mutate(image = ifelse(include & !outlier, "", image))
          plot.countPlot <- base.countPlot %+% plot.data
          plot.countPlot <- plot.countPlot +
