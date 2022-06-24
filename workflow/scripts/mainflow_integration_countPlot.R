@@ -32,8 +32,8 @@ switch(plot.type,
          plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
        },
        batch.qc={
-         plot.countPlot <- base.countPlot + facet_wrap(vars(batch)) %+%
-                           (dots %>% mutate(dots.per.cell = dot.count / num.cells))
+         plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
+         plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
          message(paste("Generating batch faceted count plot for", probe))
        },
        replot={
