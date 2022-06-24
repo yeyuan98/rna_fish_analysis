@@ -23,7 +23,7 @@ sem.error <- function(x){
 base.countPlot <-
   ggplot(data = NULL, aes(x = group, y = dots.per.cell))+
   geom_point()+
-  stat_summary(fun.data = sem.error, fun.args = list(mult=1),
+  stat_summary(fun.data = sem.error,
                geom="errorbar", color="red", width=0.2)+  # This calculates s.e.m.
   stat_summary(fun = mean, geom="point", color="red", size=2, alpha=0.5)+  # This calculates mean.
   scale_y_continuous(expand = c(0.05,0.05), limits = c(plot.ymin, plot.ymax))+
