@@ -33,9 +33,6 @@ switch(plot.type,
        merged={
          message(paste("Generating merged count plot for", probe))
          plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells)
-
-         print(plot.data)
-
          plot.countPlot <- base.countPlot %+% plot.data
        },
        batch.qc={
