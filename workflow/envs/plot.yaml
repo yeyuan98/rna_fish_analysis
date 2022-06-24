@@ -8,3 +8,4 @@ dependencies:
   - r-yaml
   - r-ggpmisc
   - r-mclust
+  - r-ggrepel
