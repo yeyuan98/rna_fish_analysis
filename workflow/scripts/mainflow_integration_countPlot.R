@@ -32,13 +32,15 @@ probe <- snakemake@wildcards[["probe"]]
 switch(plot.type,
        merged={
          message(paste("Generating merged count plot for", probe))
-         dots.processed <- dots %>%
-                            mutate(dots.per.cell = dot.count / num.cells) %>%
-                            group_by()
-         plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
+         plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells)
+
+         print(plot.data)
+
+         plot.countPlot <- base.countPlot %+% plot.data
        },
        batch.qc={
-         plot.countPlot <- base.countPlot %+% (dots %>% mutate(dots.per.cell = dot.count / num.cells))
+         plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells)
+         plot.countPlot <- base.countPlot %+% plot.data
          plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
          message(paste("Generating batch faceted count plot for", probe))
        },
