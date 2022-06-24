@@ -133,7 +133,7 @@ if (any(is.na(dots.full$group)))
 
 
 dots.full %>%
-  group_by(group, image, sample, batch) %>%
+  group_by(group, image, sample, batch, include) %>%
   summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") -> dots
 
 

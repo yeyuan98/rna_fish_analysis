@@ -38,13 +38,15 @@ probe <- snakemake@wildcards[["probe"]]
 switch(plot.type,
        merged={
          message(paste("Generating merged count plot for", probe))
-         plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells)
+         plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells) %>% filter(include)
          plot.countPlot <- base.countPlot %+% plot.data
        },
        batch.qc={
          plot.data <- dots %>% mutate(dots.per.cell = dot.count / num.cells)
          plot.countPlot <- base.countPlot %+% plot.data
-         plot.countPlot <- plot.countPlot + facet_wrap(vars(batch))
+         plot.countPlot <- plot.countPlot +
+                           facet_wrap(vars(batch)) +
+                           geom_point(color=ifelse(plot.data$include, "black", "red"))
          message(paste("Generating batch faceted count plot for", probe))
        },
        replot={
