@@ -11,9 +11,9 @@ if (F){
 }
 
 
-library(tidyverse)
-library(ggpmisc)
-library(mclust)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggpmisc))
+suppressPackageStartupMessages(library(mclust))
 
 
 source("workflow/scripts/mainflow_integration_plot_loader.R")

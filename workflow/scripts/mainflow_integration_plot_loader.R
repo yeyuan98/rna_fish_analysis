@@ -4,8 +4,8 @@
 #        dots.full is non-summarized data.frame with all the columns; however, it only has dots that overlapped with mask
 #        dots.no.overlap.full is non-summarized and also has ALL dots before overlap processing.
 
-library(tidyverse)
-library(yaml)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(yaml))
 
 # ------ HELPER FUNCTION DEFINITIONS ------
 verify.samples <- function(samples){
