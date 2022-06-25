@@ -76,7 +76,8 @@ switch(plot.type,
            group_by(group, image, sample, batch) %>%
            summarize(dot.count = n(), num.cells = min(num_cells), .groups = "drop") -> dots.filtered
          # add on data to plot
-         plot.countPlot <- base.countPlot %+% (dots.filtered %>% mutate(dots.per.cell = dot.count / num.cells))
+         plot.data <- dots.filtered %>% mutate(dots.per.cell = dot.count / num.cells)
+         plot.countPlot <- base.countPlot %+% plot.data
          message(paste("Generating filtered count plot for", probe))
        },
        stop("Unsupported plotting type"))
@@ -92,3 +93,6 @@ ggsave(filename = basename(out.path),
        width = width.scale.factor * plot.width.in,
        height = plot.height.in,
        units = "in")
+
+out.data.path <- file.path(dirname(out.path), paste0(plot.type, ".csv"))
+write_csv(plot.data, out.data.path)
