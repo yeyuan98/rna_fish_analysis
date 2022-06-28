@@ -25,6 +25,8 @@ light_trains:
 segmentation:
   model: "full_cell" # what model to use
   device: "cpu" # where to run the model, either cuda or cpu. GPU is likely to be 10X faster if not more.
+  manual: false # if the user will override model-generated masks and use manual masks instead for analysis
+  manual_threshold: 500 # threshold for manual masks, in nanometer unit
 fishdot:
   psf_xy: 123.6 # PSF in xy direction, in nanometer unit
   psf_z: 360.5 # PSF in z direction, in nanometer unit

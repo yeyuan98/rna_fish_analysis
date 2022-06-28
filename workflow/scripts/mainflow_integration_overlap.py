@@ -10,9 +10,49 @@ from os.path import split, splitext, join
 from os import makedirs
 
 
+# The following functions decide what constitutes "overlap" given a dot (x,y,z) and the mask array (xyz)
+def overlap_simple(x, y, z, mask):
+    """
+        Simple overlap check.
+        Returns True if the dot is in the mask.
+    :param x: x coordinate of the dot
+    :param y: y coordinate of the dot
+    :param z: z coordinate of the dot
+    :param mask: mask array
+    :return: True if the dot is in the mask
+    """
+    return mask[x, y, z] > 0
+
+
+def overlap_manual(x, y, z, mask, physicalSizes, threshold):
+    """
+        Overlap check for the manual mask mode.
+        Returns True if the dot is in vicinity of the mask.
+    :param x: x coordinate of the dot
+    :param y: y coordinate of the dot
+    :param z: z coordinate of the dot
+    :param mask: mask array
+    :param physicalSizes: physical sizes of the image (x, y, z)
+    :param threshold: physical distance threshold for overlap (unit same as physicalSizes)
+    :return: True if the dot is in the mask
+    """
+    # First, get the dot and physicalSizes
+    center = np.array([x, y, z])  # shape will be (3,)
+    physicalSizes = np.array(physicalSizes)  # shape will be (3,)
+    # Next, get positions of all mask pixels
+    mask_pixels = (mask != 0).nonzero()
+    mask_pixels = np.vstack(mask_pixels)  # shape 3xN where N is the number of pixels
+    # Next, get the distance between the dot and all mask pixels
+    center = np.reshape(center, (3, 1))
+    physicalSizes = np.reshape(physicalSizes, (3, 1))
+    distances = np.linalg.norm(physicalSizes * (mask_pixels - center), axis=0)  # shape N, physical units
+    return np.min(distances) < threshold
+
+
 def integration_overlap(samples_csv, output_paths):
     """
         For each image file in samples_csv, reads in segmentation mask and dots list, and performs union.
+        Supports manually annotated masks. Refer to the pipeline documentation on the manual overlap mode.
     :param samples_csv: Path to the integrated per image information
     :param output_paths: Paths to the output dots csv file and visualization folder
     """
@@ -22,6 +62,7 @@ def integration_overlap(samples_csv, output_paths):
     dots_csv_complete = output_paths["dots_complete"]
     viz_dir = output_paths["gaussian_fit"]
     makedirs(viz_dir, exist_ok=True)  # visualization folder
+    manual_mode = snakemake.config["segmentation"]["manual"]
     with open(samples_csv, 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -47,7 +88,13 @@ def integration_overlap(samples_csv, output_paths):
                     dot_dict = dotrow.copy()
                     dot_dict.update({'sample': sample, 'image': image_name,
                                      'physicalSizeX': psx, 'physicalSizeY': psy, 'physicalSizeZ': psz})
-                    if mask[x, y, z] > 0:  # dot in segmentation mask
+                    if manual_mode:
+                        # TODO: physical unit may not be micrometer and current code may break for different setups.
+                        dot_overlapped = overlap_manual(x, y, z, mask, [psx, psy, psz],
+                                                        snakemake.config["segmentation"]["manual_threshold"] / 1E3)
+                    else:
+                        dot_overlapped = overlap_simple(x, y, z, mask)
+                    if dot_overlapped:  # dot in segmentation mask
                         result.append(dot_dict)
                         viz_dots_dict["x"].append(x)
                         viz_dots_dict["y"].append(y)
