@@ -41,9 +41,9 @@ def overlap_manual(x, y, z, mask, physicalSizes, threshold):
     center = np.array([x, y, z])  # shape will be (3,)
     physicalSizes = np.array(physicalSizes)  # shape will be (3,)
     # Next, get bounding box given its center and physicalSizes
-    box_lower = center - threshold / physicalSizes
+    box_lower = center - threshold / physicalSizes / 2
     box_lower = np.maximum(box_lower, 0)
-    box_upper = center + threshold / physicalSizes
+    box_upper = center + threshold / physicalSizes / 2
     box_upper = np.minimum(box_upper, np.array(mask.shape) - 1)
     # Finally, see if any of the mask is in the box
     return np.any(mask[box_lower[0]:box_upper[0], box_lower[1]:box_upper[1], box_lower[2]:box_upper[2]])
