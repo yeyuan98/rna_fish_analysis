@@ -28,25 +28,25 @@ def overlap_manual(x, y, z, mask, physicalSizes, threshold):
     """
         Overlap check for the manual mask mode.
         Returns True if the dot is in vicinity of the mask.
+        Exact distance is hard to compute and this function adopts a rough estimate.
     :param x: x coordinate of the dot
     :param y: y coordinate of the dot
     :param z: z coordinate of the dot
     :param mask: mask array
     :param physicalSizes: physical sizes of the image (x, y, z)
-    :param threshold: physical distance threshold for overlap (unit same as physicalSizes)
+    :param threshold: physical distance threshold for overlap (unit same as physicalSizes, on all axes independently)
     :return: True if the dot is in the mask
     """
     # First, get the dot and physicalSizes
     center = np.array([x, y, z])  # shape will be (3,)
     physicalSizes = np.array(physicalSizes)  # shape will be (3,)
-    # Next, get positions of all mask pixels
-    mask_pixels = (mask != 0).nonzero()
-    mask_pixels = np.vstack(mask_pixels)  # shape 3xN where N is the number of pixels
-    # Next, get the distance between the dot and all mask pixels
-    center = np.reshape(center, (3, 1))
-    physicalSizes = np.reshape(physicalSizes, (3, 1))
-    distances = np.linalg.norm(physicalSizes * (mask_pixels - center), axis=0)  # shape N, physical units
-    return np.min(distances) < threshold
+    # Next, get bounding box given its center and physicalSizes
+    box_lower = center - threshold / physicalSizes
+    box_lower = np.maximum(box_lower, 0)
+    box_upper = center + threshold / physicalSizes
+    box_upper = np.minimum(box_upper, np.array(mask.shape) - 1)
+    # Finally, see if any of the mask is in the box
+    return np.any(mask[box_lower[0]:box_upper[0], box_lower[1]:box_upper[1], box_lower[2]:box_upper[2]])
 
 
 def integration_overlap(samples_csv, output_paths):
