@@ -92,6 +92,7 @@ def integration_overlap(samples_csv, output_paths):
                         # TODO: physical unit may not be micrometer and current code may break for different setups.
                         dot_overlapped = overlap_manual(x, y, z, mask, [psx, psy, psz],
                                                         snakemake.config["segmentation"]["manual_threshold"] / 1E3)
+
                     else:
                         dot_overlapped = overlap_simple(x, y, z, mask)
                     if dot_overlapped:  # dot in segmentation mask
