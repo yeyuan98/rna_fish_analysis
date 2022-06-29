@@ -32,7 +32,7 @@ def output_workflow(workflow, config):
         params = config["pipeline_light_train"]["fishdot"] + "++" + params
         result = join("fishdot", params)
     elif workflow == "segmentation":
-        params = "+".join(config["segmentation"].values())
+        params = "+".join([str(v) for v in config["segmentation"].values()])
         params = config["pipeline_light_train"]["segmentation"] + "++" + params
         result = join("segmentation", params)
     else:
