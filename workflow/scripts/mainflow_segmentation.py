@@ -43,11 +43,13 @@ def segmentation(inputs, output_dir, config):
     model = image_segmentation_model.SegmentationModel(encoder, weights)
     model.to(device)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
-    print_current_time("Model loaded, building output")
+    if VERBOSE:
+        print_current_time("Model loaded, building output")
     original_names = [os.path.split(inp)[1] for inp in inputs]
     output_paths = [os.path.join(output_dir, oname) for oname in original_names]
     os.mkdir(output_dir)
-    print_current_time("Performing prediction")
+    if VERBOSE:
+        print_current_time("Performing prediction")
     for i in tqdm(range(len(output_paths))):
         print_current_time("...input = " + inputs[i])
         # Load tifffile
@@ -61,7 +63,8 @@ def segmentation(inputs, output_dir, config):
         image = image.asarray()  # shape = zyx
         image = np.transpose(image, axes=(2, 1, 0))  # new shape = xyz
         image = np.expand_dims(image, axis=2)  # expand channel shape = xycz where c=1
-        print_current_time("......input shape after channel expansion=" + str(image.shape))
+        if VERBOSE:
+            print_current_time("......input shape after channel expansion=" + str(image.shape))
         original_x_pixels = image.shape[0]  # STOPPOINT----------
         original_y_pixels = image.shape[1]  # original x & y will be useful for resizing back.
         # Perform augmentation
@@ -77,27 +80,33 @@ def segmentation(inputs, output_dir, config):
             except:
                 raise ValueError("use dict for augmentation function parameters.")
         image = np.squeeze(image, axis=2)
-        print_current_time("augmentation completed & channel collapsed, shape=" + str(image.shape))
+        if VERBOSE:
+            print_current_time("augmentation completed & channel collapsed, shape=" + str(image.shape))
         # Perform MIP of the whole stack
         image = image_operators.Z_MIP_Physical_Stack(img=image, z_spacing_physical=projection_physical,
                                                      method=MIP_method, physicalSizeZ=physicalSizeZ)
-        print_current_time("MIP completed")
+        if VERBOSE:
+            print_current_time("MIP completed")
         # Run model
         pred_mask_stack = image_segmentation_model.getMask(model=model, image=image, device=device,
                                                            original_xy_pixels={"x": original_x_pixels,
                                                                                "y": original_y_pixels})
-        print_current_time("Prediction completed")
+        if VERBOSE:
+            print_current_time("Prediction completed")
         # Optionally fill the image
         if fill:
             for j in range(pred_mask_stack.shape[2]):
                 pred_mask_stack[:, :, j] = image_operators.imfill(pred_mask_stack[:, :, j])
-            print_current_time("Fill completed")
+            if VERBOSE:
+                print_current_time("Fill completed")
         tf.imwrite(output_paths[i], np.transpose(pred_mask_stack, axes=(2, 1, 0)), photometric='minisblack')
-        print_current_time("Output mask written")
+        if VERBOSE:
+            print_current_time("Output mask written")
 
 
 try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow segmentation is only compatible with snakemake script directive.")
+VERBOSE = snakemake.config["resources"]["verbose_log"]["segmentation"]
 segmentation(snakemake.input, snakemake.output[0], snakemake.config)

@@ -30,7 +30,7 @@ def getChannelNameFromPath(path):
     return (path.groups()[0])[::-1]
 
 
-def visualize(samples_csv_path, output_dir_base):
+def visualize(samples_csv_path, output_dir_base, verbose):
     """
         aggregates results together to form visualization images.
     :param samples_csv_path: path to the integration file samples.csv. Do NOT need user custom fields.
@@ -38,6 +38,7 @@ def visualize(samples_csv_path, output_dir_base):
             Folders corresponding to different samples for this probe will be created.
             This function develops file paths based on samples.csv integration and snake_helper only.
             Assuming np.uint16 dtype
+    :param verbose: boolean. If true, print progress.
     :return: none.
     """
     with open(samples_csv_path, "r") as csvfile:
@@ -77,4 +78,5 @@ def visualize(samples_csv_path, output_dir_base):
             tf.imwrite(output_path, img_vis,
                        compression=tf.TIFF.COMPRESSION.DEFLATE, imagej=True,
                        metadata={'axes': 'ZCYX'})  # Will automatically infer photometric.
-            print_current_time("Visualization written for " + sample + "  " + image)
+            if verbose:
+                print_current_time("Visualization written for " + sample + "  " + image)

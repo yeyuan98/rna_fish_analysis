@@ -31,12 +31,14 @@ def sample_convert(inputs, output_dir):
             run = subprocess.run(["bfconvert.bat", in_path, out_path], capture_output=True)
         else:
             run = subprocess.run(["bfconvert", in_path, out_path], capture_output=True)
-        print_check_run_info(run)
-        print_current_time("Done conversion")
+        if VERBOSE:
+            print_check_run_info(run)
+            print_current_time("Done conversion")
 
 
 try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow convert is only compatible with snakemake script directive.")
+VERBOSE = snakemake.config["resources"]["verbose_log"]["sample_convert"]
 sample_convert(snakemake.input, snakemake.output[0])

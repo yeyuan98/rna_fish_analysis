@@ -49,12 +49,14 @@ def fishdot(inputs, output_dir, wildcards, config):
     print_current_time(f"Running MATLAB for {params}")
     matlab_run_string = f"run('{output_mpath}'); exit;"
     run = subprocess.run(["matlab", "-nodisplay -nosplash -nodesktop", "-r", matlab_run_string])
-    print_check_run_info(run)
-    print_current_time("Done fishdot")
+    if VERBOSE:
+        print_check_run_info(run)
+        print_current_time("Done fishdot")
 
 
 try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow fishdot is only compatible with snakemake script directive.")
+VERBOSE = snakemake.config["resources"]["verbose_log"]["fishdot"]
 fishdot(snakemake.input, snakemake.output[0], snakemake.wildcards, snakemake.config)

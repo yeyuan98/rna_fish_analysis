@@ -32,6 +32,7 @@ fishdot:
   psf_z: 360.5 # PSF in z direction, in nanometer unit
   threshold: 30 # threshold setting, global, in arbitrary unit as defined by AIRLOCALIZE
 
+
 # Resource allocation defaults
 #   These defaults are quite generous, typically allocating more than necessary.
 resources:
@@ -54,6 +55,11 @@ resources:
     fishdot: "1:00:00"
     sample_convert: "1:00:00"
     sample_singlechannel: "1:00:00"
+  verbose_log:
+    integration: true
+    segmentation: true
+    fishdot: true
+    sample_convert: true
 
 
 # Internal method parameters

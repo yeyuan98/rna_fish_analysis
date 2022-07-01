@@ -59,7 +59,8 @@ def summarize(sample_paths, output_file_paths, config):
             mask_path = join(sample_path, output_workflow("segmentation", config), image_name + ".tif")
             fishdot_path = join(sample_path, output_workflow("fishdot", config), image_name + ".loc4")
             converted_path = join(sample_path, output_workflow("convert", config), image_name + ".ome.tif")
-            print_current_time("      converted image path: " + converted_path)
+            if VERBOSE:
+                print_current_time("      converted image path: " + converted_path)
             mask_pixel_volume = image_base.load_nonzero_count(mask_path)
             (z_pixel_count, z_direction) = image_base.load_z_direction(converted_path)
             pixel_sizes = image_base.load_pixelSizes(converted_path)
@@ -78,7 +79,7 @@ def summarize(sample_paths, output_file_paths, config):
         f.write("# Refer to documentation for possible settings.\nxlab:\n  \nylab:\n  \ngroup_ordered:\n  \n")
     print_current_time("Done summary. Aggregating images for visualization...")
     output_vis_path = output_file_paths['visualization']
-    visualize(output_samples_path, output_vis_path)
+    visualize(output_samples_path, output_vis_path, VERBOSE)
     warnings.warn("Aggregation completed. Please modify samples.csv, plot.csv and plot.yaml for each probe "
                   "before proceeding to final plots.")
     warnings.warn("Next steps: int_qc or int_plot. Check documentation for details.")
@@ -88,4 +89,5 @@ try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow integration_summarize is only compatible with snakemake script directive.")
+VERBOSE = snakemake.config["resources"]["verbose_log"]["integration"]
 summarize(snakemake.input, snakemake.output, snakemake.config)

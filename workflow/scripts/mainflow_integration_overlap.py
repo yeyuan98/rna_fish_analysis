@@ -67,7 +67,8 @@ def integration_overlap(samples_csv, output_paths):
         reader = csv.DictReader(csvfile)
         for row in reader:
             # Process each image (part of a sample)
-            print_current_time("Integration overlap: processing image= " + row['mask_path'])
+            if VERBOSE:
+                print_current_time("Integration overlap: processing image= " + row['mask_path'])
             sample = row['sample']
             mask = tf.TiffFile(row['mask_path']).asarray()  # shape=zyx
             mask = np.transpose(mask, axes=(2, 1, 0))  # shape=xyz
@@ -120,10 +121,12 @@ def integration_overlap(samples_csv, output_paths):
         writer = csv.DictWriter(csvfile, fieldnames=result_fields)
         writer.writeheader()
         writer.writerows(result_complete)
-        print_current_time("Integration overlap: done.")
+        if VERBOSE:
+            print_current_time("Integration overlap: done.")
 
 try:
     snakemake
 except NameError:
     raise ReferenceError("Mainflow integration is only compatible with snakemake script directive.")
+VERBOSE = snakemake.config["resources"]["verbose_log"]["integration"]
 integration_overlap(snakemake.input[0], snakemake.output)
