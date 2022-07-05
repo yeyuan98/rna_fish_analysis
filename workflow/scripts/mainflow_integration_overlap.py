@@ -111,12 +111,12 @@ def integration_overlap(samples_csv, output_paths):
                        compression=tf.TIFF.COMPRESSION.DEFLATE, imagej=True,
                        metadata={'axes': 'ZYX'})
     # Next, write results
-    with open(dots_csv, 'w') as csvfile:
+    with open(dots_csv, 'w', newline='') as csvfile:
         result_fields = result[0].keys()
         writer = csv.DictWriter(csvfile, fieldnames=result_fields)
         writer.writeheader()
         writer.writerows(result)
-    with open(dots_csv_complete, 'w') as csvfile:
+    with open(dots_csv_complete, 'w', newline='') as csvfile:
         result_fields = result_complete[0].keys()
         writer = csv.DictWriter(csvfile, fieldnames=result_fields)
         writer.writeheader()
