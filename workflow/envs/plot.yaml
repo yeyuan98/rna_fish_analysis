@@ -6,7 +6,7 @@ dependencies:
   - r-base
   - r-tidyverse
   - r-yaml
-  - r-scales >=1.2.0
-  - r-ggpmisc >=0.4.7
+  - r-scales>=1.2.0
+  - r-ggpmisc=0.4.2
   - r-mclust
   - r-ggrepel
