@@ -19,6 +19,13 @@ suppressPackageStartupMessages(library(mclust))
 source("workflow/scripts/mainflow_integration_plot_loader.R")
 dots <- dots.full  # QC Plot needs raw dots.csv integrated data
 
+# A custom function for error bar calculation. Note that this is copied from countPlot.R
+# TODO: consider moving base.countPlot and sem.error to plot_loader.R
+sem.error <- function(x){
+  sem <- sd(x) / sqrt(length(x))
+  m <- mean(x)
+  data.frame(ymin=m-sem, y=m, ymax=m+sem)
+}
 
 # Check plotting type and add batch facet if QC plot is requested.
 plot.type <- snakemake@wildcards[["plot_type"]]
@@ -114,6 +121,19 @@ switch(plot.type,
                          args = list(mean = fit.means[1], sd = fit.sds[1]), col="red", alpha=0.3, size=3)+
            stat_function(fun = function(x,...) dnorm(x,...) * fit.pros[2],
                          args = list(mean = fit.means[2], sd = fit.sds[2]), col="green", alpha = 0.3, size=3)+
+           custom.theme
+       },
+       intensity_sample={
+         # Plot dot intensity distribution for each sample. Each dot is a detected spot.
+         dots %>%
+           ggplot(aes(x=sample, y=log1p(integratedIntensity)))+
+           geom_point()+
+           stat_summary(fun.data = sem.error,
+                        geom="errorbar", color="red", width=0.1)+  # This calculates s.e.m.
+           stat_summary(fun = mean, geom="point", color="red", shape=3, size=3)+
+           scale_y_continuous(expand = c(0,0.01))+
+           scale_x_continuous(expand=c(0,0))+
+           xlab("Sample")+ylab("log1p(Intensity) (a.u.)")+
            custom.theme
        },
        stop("Unsupported QC plotting type"))
