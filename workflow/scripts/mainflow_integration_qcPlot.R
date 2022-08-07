@@ -124,9 +124,12 @@ switch(plot.type,
            custom.theme
        },
        intensity_sample={
-         # Plot dot intensity distribution for each sample. Each dot is a detected spot.
+         # Plot dot intensity distribution for each sample. Each dot is averaged log1p(intensity) from an image
          dots %>%
-           ggplot(aes(x=sample, y=log1p(integratedIntensity)))+
+           mutate(log1pint = log1p(integratedIntensity)) %>%
+           group_by(sample, image) %>%
+           summarize(log1pint = mean(log1pint), .groups = "drop") %>%
+           ggplot(aes(x=sample, y=log1pint))+
            geom_point()+
            stat_summary(fun.data = sem.error,
                         geom="errorbar", color="red", width=0.1)+  # This calculates s.e.m.
