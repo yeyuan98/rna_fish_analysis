@@ -132,7 +132,6 @@ switch(plot.type,
                         geom="errorbar", color="red", width=0.1)+  # This calculates s.e.m.
            stat_summary(fun = mean, geom="point", color="red", shape=3, size=3)+
            scale_y_continuous(expand = c(0,0.01))+
-           scale_x_continuous(expand=c(0,0))+
            xlab("Sample")+ylab("log1p(Intensity) (a.u.)")+
            custom.theme
        },
