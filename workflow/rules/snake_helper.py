@@ -135,7 +135,7 @@ def output_integration_all(stage, config):
         #   Intensity plot separated by sample
         intensity_sample = [join("results", probe, "integration", output_workflow_all(config),
                               "qcPlots", "intensity_sample.pdf") for probe in probes]
-        results = batch + seg_volume + intensity + residual + working_dist + intensity_all
+        results = batch + seg_volume + intensity + residual + working_dist + intensity_all + intensity_sample
     elif stage == "plot":
         results = [join("results", probe, "integration", output_workflow_all(config),
                    "countPlots", "merged.pdf") for probe in probes]
