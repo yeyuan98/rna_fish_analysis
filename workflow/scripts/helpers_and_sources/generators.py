@@ -52,10 +52,11 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
         threshold_type = threshold[0]
         if threshold_type not in ('q',):
             raise ValueError("Invalid str threshold. Supported filters: quantile (q)")
-        threshold = float(threshold[1:])
+        threshold_set = float(threshold[1:])
     elif isinstance(threshold, Number):
         # Constant threshold. Type = 'c'.
         threshold_type = 'c'
+        threshold_set = threshold
     else:
         raise ValueError("Invalid threshold setting. Check config file.")
 
@@ -72,7 +73,7 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
         t = t.replace("{PSF_XY}", str(round(psf_xy / mean([physical_x[i], physical_y[i]]), ndigits=2)))
         t = t.replace("{PSF_Z}", str(round(psf_z / physical_z[i], ndigits=2)))
         img = tf.imread(input_tifs[i])
-        threshold = threshold_compute[threshold_type](img, threshold)
+        threshold = threshold_compute[threshold_type](img, threshold_set)
         t = t.replace("{THRESHOLD}", str(threshold))
         f = open(ini_paths[i], "w")  # write template
         f.write(t)
