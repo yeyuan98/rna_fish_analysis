@@ -28,8 +28,12 @@ segmentation:
   manual: false # if the user will override model-generated masks and use manual masks instead for analysis
   manual_threshold: 500 # threshold for manual masks, in nanometer unit
 fishdot:
+  # PSF values in nanometer - may be measured by AIRLOCALIZE interactive mode
   psf_xy: 123.6 # PSF in xy direction, in nanometer unit
   psf_z: 360.5 # PSF in z direction, in nanometer unit
+  # Threshold definition - may be single fixed absolute value or quantile filter
+  #   Absolute value - give `threshold` a single integer
+  #   Quantile filter - give `threshold` a single string. e.g., "q90" means 90% quantile
   threshold: 30 # threshold setting, global, in arbitrary unit as defined by AIRLOCALIZE
 
 

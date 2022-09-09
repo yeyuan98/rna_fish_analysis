@@ -4,11 +4,20 @@
 
 import os
 from statistics import mean
+import numpy as np
+import tifffile as tf
 
 #  Constant template file paths and the AIRLOCALIZE external script path
 AIRLOCALIZE_template_ini_path = "workflow/scripts/helpers_and_sources/airlocalize_template.ini"
 AIRLOCALIZE_template_m_path = "workflow/scripts/helpers_and_sources/airlocalize_template.m"
 AIRLOCALIZE_root = "resources/AIRLOCALIZE-main"
+
+
+#  Threshold computers to support different threshold settings
+threshold_compute = {
+    'c': lambda img, x: x,  # constant threshold. img not used
+    'q': lambda img, x: np.quantile(img.flatten(), x / 100)  # quantile threshold.
+}
 
 
 def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
@@ -35,6 +44,21 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
     psf_xy = float(config["fishdot"]["psf_xy"])
     psf_z = float(config["fishdot"]["psf_z"])
 
+    # Parse threshold setting
+    #   Supports: absolute single value; quantile filter "q{numeric}"
+    threshold = config["fishdot"]["threshold"]
+    from numbers import Number
+    if type(threshold) == str:
+        threshold_type = threshold[0]
+        if threshold_type not in ('q',):
+            raise ValueError("Invalid str threshold. Supported filters: quantile (q)")
+        threshold = float(threshold[1:])
+    elif isinstance(threshold, Number):
+        # Constant threshold. Type = 'c'.
+        threshold_type = 'c'
+    else:
+        raise ValueError("Invalid threshold setting. Check config file.")
+
     for i in range(len(input_tifs)):
         # Generates ini file for each input tif
         tif_name = os.path.split(input_tifs[i])[1]
@@ -47,7 +71,9 @@ def AIRLOCALIZE_gen(config, input_tifs, output_mpath, output_dir_path,
         t = t.replace("{OUTPUT_DIRECTORY}", output_dir_path)
         t = t.replace("{PSF_XY}", str(round(psf_xy / mean([physical_x[i], physical_y[i]]), ndigits=2)))
         t = t.replace("{PSF_Z}", str(round(psf_z / physical_z[i], ndigits=2)))
-        t = t.replace("{THRESHOLD}", str(config["fishdot"]["threshold"]))
+        img = tf.imread(input_tifs[i])
+        threshold = threshold_compute[threshold_type](img, threshold)
+        t = t.replace("{THRESHOLD}", str(threshold))
         f = open(ini_paths[i], "w")  # write template
         f.write(t)
         f.close()
